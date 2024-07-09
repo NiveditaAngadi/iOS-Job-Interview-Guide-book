@@ -1,4 +1,47 @@
-1. Why Swift is called Type Safe language?
+Why Swift is called Type Safe language?
 Ans: Swift is a type-safe language, which means the language helps you to be clear about the types of values your code can work with. 
+A type safe language encourages you to be clear about the types of values your code can work with. 
 If part of your code requires a String, type safety prevents you from passing it an Int by mistake. Likewise, type safety prevents you from accidentally passing an optional String to a piece of code that requires a non-optional String. 
 Type safety helps you catch and fix errors as early as possible in the development process.
+Because Swift is type safe, it performs type checks when compiling your code and flags any mismatched types as errors.
+This enables you to catch and fix errors as early as possible in the development process.
+
+Value of the constant can not be changed once it's set. Define by the "let". 
+let maximumNumberOfLoginAttempts = 10
+var currentLoginAttempt = 0
+
+“Declare a new constant called maximumNumberOfLoginAttempts, and give it a value of 10. Then, declare a new variable called currentLoginAttempt, 
+and give it an initial value of 0.”
+
+When to use let / var? 
+Ans: If a stored value in your code won’t change, always declare it as a constant with the let keyword. Use variables only for storing values that change.
+
+When you declare a constant or a variable, you can give it a value as part of that declaration, like the examples above. 
+Alternatively, you can assign its initial value later in the program, as long as it’s guaranteed to have a value before the first time you read from it.
+
+Type annotations - Way to provide information about what kind of data. 
+var welcomeMessage: String
+
+Type inference - When you provide the initial value to the constant or variable - swift automatically infer the type of data. 
+Type inference enables a compiler to deduce the type of a particular expression automatically when it compiles your code, 
+simply by examining the values you provide.
+
+Naming Constant/ Variable ->
+Constant and variable names can contain almost any character, including Unicode characters:
+Constant and variable names can’t contain whitespace characters, mathematical symbols, arrows, private-use Unicode scalar values, or line- and box-drawing characters. 
+Nor can they begin with a number, although numbers may be included elsewhere within the name.
+
+You can print the current value of a constant or variable with the print(_:separator:terminator:) function: 
+Its global function. 
+
+String Interpolation -> 
+Swift uses string interpolation to include the name of a constant or variable as a placeholder in a longer string, 
+and to prompt Swift to replace it with the current value of that constant or variable. 
+Wrap the name in parentheses and escape it with a backslash before the opening parenthesis:
+
+Difference between Double and Float?
+Double represents a 64-bit floating-point number. Precision of at least 15 decimal digits. 
+Float represents a 32-bit floating-point number. Precision of at least 6 decimal digits.
+In situations where either type would be appropriate, Double is preferred.
+
+
