@@ -1,3 +1,4 @@
+##Basics##
 Why Swift is called Type Safe language?
 Ans: Swift is a type-safe language, which means the language helps you to be clear about the types of values your code can work with. 
 A type safe language encourages you to be clear about the types of values your code can work with. 
