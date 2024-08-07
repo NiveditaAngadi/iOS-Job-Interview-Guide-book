@@ -1,0 +1,25 @@
+S.O.L.I.D 
+
+1. What is SOLID principle?
+SOLID principle is an acronym for a set of principles in object-oriented programming that help to design more 
+1. maintainable 
+2. scalable 
+3. reusable code. 
+
+2. Explain SOLID principle.
+Five solid principles are as follows.
+1. Single Responsibility Principle (SRP) - A class should have only one reason to change 
+2. Open-Closed Principle (OCP) - Software entities should be open for extension but closed for modification. 
+3. Liskov Substitution Principle (LSP) - Subtypes should be substitutable for their base types. 
+4. Interface segregation Principle (ISP) - Clients should not be forced to depend on the interfaces they do not use. 
+5. Dependency Inversion Principle (DIP) - High-level modules should not depend on low-level modules, both should depend on abstractions. 
+
+3. Give example of single responsibility principle (SRP)
+
+4. Give example of Open-Closed Principle (OCP) 
+
+5. Give example of Liskov Substitution Principle (LSP)
+
+6. Give example of Interface segregation Principle (ISP)
+
+7. Given example of Dependency Inversion Principle (DIP)
