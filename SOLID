@@ -9,17 +9,244 @@ SOLID principle is an acronym for a set of principles in object-oriented program
 2. Explain SOLID principle.
 Five solid principles are as follows.
 1. Single Responsibility Principle (SRP) - A class should have only one reason to change 
-2. Open-Closed Principle (OCP) - Software entities should be open for extension but closed for modification. 
+2. Open-Closed Principle (OCP) - Software entities (clases, modules, functions) should be open for extension but closed for modification. 
 3. Liskov Substitution Principle (LSP) - Subtypes should be substitutable for their base types. 
 4. Interface segregation Principle (ISP) - Clients should not be forced to depend on the interfaces they do not use. 
 5. Dependency Inversion Principle (DIP) - High-level modules should not depend on low-level modules, both should depend on abstractions. 
 
+3. Benefits of Single Responsibility Principle 
+ - If your project is managed by different teams and changes the same class for different reasons leading to bugs, 
+SRP will prevent this as the class should have only a single reason to change.
+- It makes version control easier - for example, if any logic of a feature needs to be updated it would only change related files. 
+There will be less merge conflicts as the responsibility of each class is different.
+
 3. Give example of single responsibility principle (SRP)
+Consider the e-commerce app, that sells only books. 
+Features include the generate an incvoice, save the invoice. 
+
+where a class handles, 
+1. CalculateTotal() - this function calculates the total amount.
+2. PrintInvoice() - this function prints the invoice. If we want to change the printing format, we need to change the logic.
+3. SaveInvoiceToFile() - this function saves the invoice in the file. This voilates the SRP, never mix the business logic with persistance logic.
+
+To implement to follow the SRP - we can create two more classes -> InvoicePrinter, InvoicePersistance.
 
 4. Give example of Open-Closed Principle (OCP) 
+It states that “software entities (classes, modules, functions, etc.) should be open for extension, but closed for modification”. 
+In other words, we can add additional functionality (extension) without touching the existing code(modification) of a class.
+
+The following code voilates the OCP. 
+class  InvoicePersistence {
+let invoice: Invoice
+init(invoice: Invoice) {
+self.invoice = invoice
+}
+func  saveInvoiceToFile(){
+//Create a file and save the invoice
+}
+func  saveInvoiceToCoreData(){
+//Saves invoice to core data
+}
+}
+
+How to correct it?
+protocol  InvoicePersistenceProtocol{
+func  save(invoice: Invoice)
+}
+class  FilePersistence: InvoicePersistenceProtocol{
+func  save(invoice: Invoice) {
+//Create a file and save the invoice
+}
+}
+class CoreDataPersistence: InvoicePersistenceProtocol{
+    func save(invoice: Invoice) {
+        //Saves invoice to core data
+    }
+}
+
+class  InvoicePersistenceOCP: InvoicePersistenceProtocol {
+let persistence: InvoicePersistenceProtocol
+init(persistence: InvoicePersistenceProtocol) {
+self.persistence = persistence
+}
+func  save(invoice: Invoice) {
+persistence.save(invoice: invoice)
+}
+}
+//calling
+let coreDatapersistence =  CoreDataPersistence()
+let persistenceOCP =  InvoicePersistenceOCP(persistence: coreDatapersistence)
+persistenceOCP.save(invoice: invoice)
+
 
 5. Give example of Liskov Substitution Principle (LSP)
+Suppose we have to make an API call with the help of NSURLRequest and upon failure, we have to get the request data of the call.
+
+let requestKey: String  =  "NSURLRequestKey"
+
+// This is an NSError subclass that provides additional functionality
+class  CustomError: NSError {
+var request: NSURLRequest? {
+return  self.userInfo[requestKey] as?  NSURLRequest
+}
+}
+
+class  FakeAPICall{
+//This is a fake API call, it will always return an error.
+//notice here the return type is NSError but we have passed CustomError
+//which is a subclass of NSError
+func  callAPI(request: NSURLRequest) -> NSError {
+let userInfo: [String:Any] = [requestKey : request]
+return  CustomError(domain:"LSP.fakeAPI.com", code:999, userInfo: userInfo)
+}
+}
+
+//Calling fake API
+let fakeAPI =  FakeAPICall()
+//Pass an empty object of NSURLRequest
+let request =  NSURLRequest()
+let error = fakeAPI.callAPI(request: request)
+if  let customError = error as?  CustomError {
+print("Request:\(customError.request)")
+}
+Here you can see CustomError (child class) is substitutable for Error (base class) and can be used when an Error object is required, so it follows LSP.
 
 6. Give example of Interface segregation Principle (ISP)
+Let’s see ISP with an example: suppose there is a protocol called GestureProtocol that provides tap, double tap and long press functionality. And, there is a button called SuperButton that performs all the operations.
+So, SuperButton should conform to GestureProtocol. Here is what the code looks like:
+
+protocol  GestureProtocol{
+func  didTap()
+func  didDoubleTap()
+func  didLongPress()
+}
+
+class  SuperButton : GestureProtocol{
+
+func  didTap() {
+//Perform task after a single tap
+}
+
+func  didDoubleTap() {
+//Perform task after double tap
+}
+
+func  didLongPress() {
+//Perform task after long press
+}
+}
+Now, if there is a button called DoubleTapButton which only performs a double-tap operation and since we have a single protocol called GestureProtocol 
+we end up writing the following code:
+class  DoubleTapButton : GestureProtocol{
+
+func  didTap() {
+//Perform task after a single tap
+}
+
+func  didDoubleTap() {
+//Perform task after double tap
+}
+
+func  didLongPress() {
+//Perform task after long press
+}
+}
+DoubleTapButton un-necessary implement didTap() and didLongPress() functions. Here it breaks the ISP. We can solve the problem using separate protocols instead of a fat one.
+The refactored code looks like this:
+protocol  SingleTapProtocol{
+func  didTap()
+}
+protocol  DoubleTapProtocol{
+func  didDoubleTap()
+}
+protocol  LongPressProtocol{
+func  didLongPress()
+}
+
+class  SuperButton : SingleTapProtocol, DoubleTapProtocol, LongPressProtocol {
+
+func  didTap() {
+//Perform task after a single tap
+}
+
+func  didDoubleTap() {
+//Perform task after double tap
+}
+
+func  didLongPress() {
+//Perform task after long press
+}
+}
+
+class  DoubleTapButton : DoubleTapProtocol {
+
+func  didDoubleTap() {
+//Perform task after double tap
+}
+
+}
+Now, DoubleTapButton only conforms to a specific protocol i.e. DoubleTapProtocol and it follows ISP.
 
 7. Given example of Dependency Inversion Principle (DIP)
+This principle states that “high-level modules should not depend on low-level modules, but should depend on abstraction”.
+This means the details of the implementation should depend on abstraction but not the other way around.
+
+The above line states that if a high-level module imports any low-level module then the code becomes tight coupling, changes in one class break another class.
+We can create four different classes for payment methods and the classes implement a common interface PaymentMethod.
+In the Payment class if we take four separate payment methods as property then the class will somewhat look like this:
+class  Payment{
+var debitCardPayment: DebitCardPayment?
+var stripePayment: StripePayment?
+var upiPayment: UPIPayment?
+var applePayPayment: ApplePayPayment?
+}
+This code clearly violates DIP as the Payment class which is a high-level module is dependent on DebitCardPayment which is a low-level module. 
+But as per DIP, it should depend on abstraction/protocol. So, instead of taking concrete classes, the Payment class takes a property of type PaymentMethod protocol.
+This means the class now depends on abstraction. Now the refactored class looks like this:
+Let’s consider an example of an iOS app that has a payment feature. The app supports multiple payment methods such as Debit Cards, Stripe, UPI, and Apple Pay.
+
+protocol PaymentMethod{
+    func pay(amount:Double)
+}
+
+class DebitCardPayment: PaymentMethod{
+    func pay(amount: Double) {
+        //Process Debit Card Payment
+    }
+}
+
+class StripePayment: PaymentMethod{
+    func pay(amount: Double) {
+        //Process Stripe Payment
+    }
+}
+
+class UPIPayment: PaymentMethod{
+    func pay(amount: Double) {
+        //Process UPI Payment
+    }
+}
+
+class ApplePayPayment: PaymentMethod{
+    func pay(amount: Double) {
+        //Process Apple Pay Payment
+    }
+}
+
+class Payment{
+    private let paymentMethod : PaymentMethod
+    init(paymetMethod: PaymentMethod) {
+        self.paymentMethod = paymetMethod
+    }
+    func makePayment(amount: Double) {
+        paymentMethod.pay(amount: amount)
+    }
+}
+// calling
+let stripePayment = StripePayment()
+let payment = Payment(paymetMethod: stripePayment)
+payment.makePayment(amount: 200.0)
+
+The above code follows the Dependency inversion principle. Again if you want to add one more payment method e.g. Credit Card you can do so without changing the Payment method class. Also, you can reuse the Payment class in another project as well as it is now loosely coupled.
+
+
