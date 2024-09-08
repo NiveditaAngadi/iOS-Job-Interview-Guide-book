@@ -1,0 +1,30 @@
+1. On what basis architecture of the app will get decided?
+Follwing are the major points to be considered when we are taking decision on the Architecture pattern to be followed when building the app. 
+
+1. Seperation of concerns
+2. Modularity 
+3. Testability 
+4. Scalability 
+5. Maintainability 
+
+2. What's the default tools SwiftUI provides when deciding the architecture patterns?
+a. Declarative and Reactive - You describe how the UI looks like in a given state, UI atomatically reflects the current state thru @State, @Binding or @StateObject 
+
+b. Flexibility - Adaptable, allowing easy incorporation of new SwiftUI features, and not hinder the adoption of new technologies. Preview is easy to build. 
+
+c. State management - Environment driven dependency, State - Driven design,  Single Source Of truth. 
+
+3. Problems with MVVM 
+MVVM allows a clean separation of concerns.
+The Model handles data and business logic,
+the ViewModel acts as an intermediary, and
+the View is purely responsible for the UI. 
+
+- ViewModel’s role is to bind the model’s state to the view, does that
+what SwiftUI’views are doing with its property wrapper?
+- Separation of logic from presentation is the reason for ViewModels
+existence but ViewModels rarely holding much logic, mostly it
+forwards calls from Interactors (UsesCases), Repositories, ...
+- ViewModels’s role prepare and transform model data for the Views,
+SwiftUI already provide those tools thru ViewModifiers such as
+FormatStyles, LocalizedStringKey, ...
