@@ -32,7 +32,13 @@ They allow implementation of a protocol to exist separate of its implementing cl
  3. It has protocol extension which gives us common functionality to all types that conforms to a protocol.
  4. It prefers to use value type instead of reference type. Have a look at the standard swift library,
  5. you can find majority of types are structures which is value type. But this doesn't mean you don't use class at all, in some situation, you have to use class.
-    So protocol oriented programming is nothing but just an another programming paradigm that try to solve the OOP drawbacks.
+    So protocol oriented programming is nothing but just an another programming paradigm that try to solve the OOP drawbacks. 
+ 6. All classes are decoupled from each other. 
+ 7. Seperating the concerns of declarations from implementation.
+ 8. Reusability 
+ 9. Testability
 
 4. Does Structure supports the inheritance?
   Classes provide single inheritance and struct doesn't support inheritance. Thus protocols was introduced.
+
+
