@@ -1,1 +1,35 @@
+Protocol oriented programming (POP)
 
+POP prefers the composition over inheritance. 
+
+1. What is composition over inheritance?
+Composite reuse principle in object-oriented programming (oop) is the principle that classes should favor polymorphic behavior and code reuse by their composition (by containing instances
+of other classes that implement the desired functionality) over inheritance from a base or parent class. 
+
+An implementation of composition over inheritance typically begins with creation of various interfaces representing the behaviors that the system must exhibit. 
+
+In large inheritance hierarchies, the ancestor classes tend to contain most of the (generalised) functionality, with the leaf subclasses making minimal contributions. The issue here is that 
+the ancestor classes end up doing a lot of things. 
+For example, "Car" drives, stores cargo, seats passengers, plays music, etc. These are many functionalities that are each quite distinct, but they all get indivisibly lumped into the Car class. 
+Descendants of Car, such as Ferrari, Toyota, BMW, etc. all make minimal modifications to this base class.
+
+The consequence of this is that there is reduced code reuse. My BoomBox also plays music, but it's not a car. Inheriting the music-playing functionality from Car isn't possible.
+
+What Swift encourages instead is that these large monolithic classes be broken down into a composition of smaller components.
+These components can then be more easily reused. Both Car and BoomBox can use MusicPlayer.
+
+Swift offers multiple features to achieve this, but the most important by far are protocol extensions. 
+They allow implementation of a protocol to exist separate of its implementing class, so that many classes may simply implement this protocol and instantly gain its functionality.
+
+2. Disadvantages of OOPS. 
+
+1. It (Objc) has only one inheritance. If we have very complicated hierarchy of inheritance, the bottom class may have a lot of unnecessary state to hold.
+2. It uses class which is a reference type. Reference type may cause code unsafe. e.g. Processing collection of reference types while they are being modified.
+
+3. Benefits of POP in swift. 
+ 1. It can conform multiple protocols.
+ 2. It can be used by not only class, but also structures and enumerations.
+ 3. It has protocol extension which gives us common functionality to all types that conforms to a protocol.
+ 4. It prefers to use value type instead of reference type. Have a look at the standard swift library,
+ 5. you can find majority of types are structures which is value type. But this doesn't mean you don't use class at all, in some situation, you have to use class.
+    So protocol oriented programming is nothing but just an another programming paradigm that try to solve the OOP drawbacks.
