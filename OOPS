@@ -1,3 +1,41 @@
 OOPS 
 Object Oriented Programming 
 
+OOPs - computer programming model that organizes software design around data or objects, rather than functions and logic. 
+
+An object can be defined as a data field that has unique attributes and behaviour. 
+
+The main aim of OOPs is to bind together the data and the functions that operate on them so that no other part of the code can access this data 
+except that function. 
+
+OOP focuses on  the objects that developers want to manipulate rather than the logic required to manipulate them. 
+
+Benefits of OOPS 
+1. Beneficial for collaborative development, when projects are divided into groups. 
+2. Additional benefits of OOP include code reusability, scalability and efficiency. 
+
+
+1. What are the structure of object-oriented programming?
+
+Structure or building blocks of object-oriented programming include the following, 
+
+1. Classes 
+2. Objects 
+3. Methods 
+4. Attributes 
+
+2. What are the main principles of OOP?
+Object-oriented programming based on the following principles. 
+
+1. Encapsulation
+2. Abstraction 
+3. Inheritance 
+4. Polymorphism
+5. Syntax 
+6. Coupling 
+7. Association 
+
+3. What is encapsulation?
+The encapsulation principle states that all important information is contained inside an object and only select information is exposed. 
+The implementation and state of each object are privately held inside a defined class. 
+Other objects 
