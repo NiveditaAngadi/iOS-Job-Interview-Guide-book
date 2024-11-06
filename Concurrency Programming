@@ -1,0 +1,82 @@
+Concurrency is the notion of multiple things happening at the same time. 
+Developer need ways to take advantage of the multiple core CPUs.
+Operating systems like OSX and iOS are capable of running multiple programs in parallel, most of the programs run in the background and perform tasks that require little continous
+processor time. 
+It is the current foreground application that both captures the user's attention and keeps the computer busy. 
+
+There are various ways to achieve the concurrency.
+1. Threads & thread programming 
+2. Grand Central Dispatch
+3. Asynchrnous programming in Swift (async/await)
+
+*** Threaded Programming ***
+In the past, introduction of concurrency to an application required the creation of one or more threads. 
+Writting threaded code is challenging. 
+Threads are a low-level tool that must be managed manually. 
+Given that the optimal number of threads for an application can change dynamically based on the current system load and the underlying hardware, 
+implementing a correct threading solution becomes extremely difficult, if not impossible to achieve. 
+In addition, the synchronization mechanisms typically used with threads add complexity and risk to software designs without any guarantees of improved performance.
+
+*** Asynchronous Programming *** 
+Asynchronous approach to the execution of concurrent tasks. 
+Rather than creating threads directly, applications need only specific tasks and then let the system perform them. 
+Advatages of this approach are, 
+1. By letting the system manage the threads, applications gain a level of scalability not possible with threads. 
+2. Application developers also gain a simpler and more efficient programming model. 
+
+*** Terminology *** 
+Thread -> Used to refer to a separate path of execution for code. 
+Process -> Used to refer to a running executable, which can encompass multiple threads.
+Task -> Abstract concept of work that needs to be performed. 
+
+** Instead on relying on threads, OSX and iOS take an asynchronous design approach to solving the concurrency problem. ** 
+
+How asynchronous function works?
+Asynchronous tasks examples are, reading data from disk. 
+When called, an asynchronous function does some work behind the scenes to start a task running but returns before that task might actually be complete. 
+Typically, this works involves acquiring a background thread, starting the desired task on that thread, and then sending a notification to the caller(usually through a callback function)
+ when the task is done. 
+OSX and iOS provide technologies to allow you to perform any task asynchrounously without having to manage the threads yourself. 
+
+Grand Central Dispatch (GCD) -> One of the technologies for starting tasks asynchronously. 
+This techology, takes the thread management code you would normally write in your own applications and move that code down to the system level. 
+All you have to do is define tasks you want system to perform asynchronously and add them to appropriate dispatch queue.
+GCD is responsible for creating and scheduling tasks on those threads. 
+Now, GCD provides the holistic approach to task management and execution, providing better efficiency than traditional threads. 
+
+Other technologies helps us to execute the asynchronous tasks is *** Operation Queues *** 
+Operation queues are Objective-C objects that act very much like dispatch queues. 
+You define the tasks you want to execute and then add them to an operation queue, which handles the scheduling and execution of those tasks.
+
+*** Dispatch Queues *** 
+Dispatch queues are a C-based mechnism for executing custom tasks. 
+Dispatch queues can extecute tasks serially or concurrently. 
+Serially -> A serial dispatch queue runs only one task at a time, waiting until that task is complete before dequeuing and starting a new one. 
+Concurrent -> A concurrent dispatch queue starts as many as it can without waiting for already started tasks to finish. 
+
+*** Note that a dispatch queue executes tasks either serially or concurrently but always in a fist-in, first-out order. In other words, dispatch queue always dequeue and starts 
+tasks in which they were added to the queue *** 
+
+Benefits of Dispatch queues 
+1. They provide a stright forward and simple programming interface. 
+2. They offer automatic and holistic thread pool management. 
+3. They provide the speed of tuned assembly. 
+4. They are much more memory efficient (becuase thread stacks do not linger in application memory) 
+5. They do not trap the kernel under load. 
+6. The asynchronous dispatching of tasks to a dispatch queue cannot deadlock the queue. 
+7. They scale gracefully under contention 
+8. Serial dispatch queues offer a more efficient alternative to locks and other sychronization primitives. 
+
+The tasks submit to a dispatch queue must be encapsulated inside either the function or block object. 
+
+What are block objects? 
+Block objects are a C langauge feature introduced in OSX v10.6 and iOS 4.0, that are simillar to the function pointers conceptually, but have some additional benefits. 
+
+Instead of defining blocks in their own lexical scope, you typically define blocks inside another function or method so that they can have access to other variables from that function or methods.
+Blocks can also be moved out of their original scope and copied onto the heap, which is what happens when you submit them to a dispatch queue. 
+
+*** Dispatch queues are part of the grand central dispatch technology and part of C runtime *** 
+
+*** Dispatch Sources *** 
+Dispatch sources are a C-based mechanism for processing specific types of system events asynchronously. 
+
