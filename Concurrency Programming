@@ -89,4 +89,16 @@ Following type of system events can monitor using dispatch sources.
 - Mach port events 
 - Custom events that you trigger
 
+*** Operation Queues *** 
+An operation queue is the cocoa equivalent of a concurrent dispatch queue and is implmented by the NSOperationQueue class. 
+Dispatch queues always execute tasks in first-in, first-out order, operation queues take other factors into account when determining the 
+execution order of tasks. 
+You can configure when defining your tasks and can use them to create complex execution-order graphs for your tasks. 
+Operation queues always execute operations concurrently, you can use dependencies to ensure they are executed serially when needed. 
+
+
+What is OpenCL?
+In OSX, the Open Computing Langauge(OpenCL) is a standards-based technology for performing general-purpose computations on a computer's 
+graphics processor. 
+
 
