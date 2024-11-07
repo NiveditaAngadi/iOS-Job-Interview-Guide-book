@@ -1,1 +1,24 @@
+Operation queues is one of the techniques to execute the Concurrent Programming in Apple platforms. 
 
+1. What are Operations?
+Cocoa operations are an object-oriented way to encapsulate work that you want to perform aynchronously. 
+Operations are designed to be used either in conjunction with an operation queue or themselves.
+They are Objective-C based, operations are most commonly used in Cocoa - based applications in OSX and iOS. 
+
+Operation - an abstract class that represents the code and data associated with a single task. 
+Since, its an abstract class, you do not use it directly but instead subclass or use one of the system-defined subclasses to perform the actual task.
+Despite being abstract, the base implementation of Operation does inclue significant logic to coordinate the safe execution of your task.
+The presence of this built-in logic allows you to focus on the actual implementation of your task,
+rather than on the glue code needed to ensure it works correctly with other system objects.
+
+An operation object is a single-shot object—that is, it executes its task once and cannot be used to execute it again. 
+You typically execute operations by adding them to an operation queue. 
+An operation queue executes its operations either directly, by running them on secondary threads, 
+or indirectly using the libdispatch library (also known as Grand Central Dispatch). 
+
+If can execute the operation by yourself instead of adding into operation queue. But you have extra responsibility of starting, checking readiness of the task before starting the task. 
+
+2. What are the operation classes of the Foundation framework?
+NSInvocationOperation 
+NSBlockOperation 
+NSOperation 
