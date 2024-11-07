@@ -78,5 +78,15 @@ Blocks can also be moved out of their original scope and copied onto the heap, w
 *** Dispatch queues are part of the grand central dispatch technology and part of C runtime *** 
 
 *** Dispatch Sources *** 
-Dispatch sources are a C-based mechanism for processing specific types of system events asynchronously. 
+Dispatch sources are a C-based mechanism for processing specific types of system events asynchronously.
+A dispatch source encapsulates information about a particular type of system event and submits a specific block objects or a function to a 
+dispatch queue whenever that event occurs. 
+Following type of system events can monitor using dispatch sources. 
+- Timers 
+- Singnal Handlers 
+- Descriptor - related events 
+- Process - related events 
+- Mach port events 
+- Custom events that you trigger
+
 
