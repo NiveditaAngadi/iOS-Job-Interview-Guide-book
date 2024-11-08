@@ -1,3 +1,7 @@
+Reference:
+https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationObjects/OperationObjects.html#//apple_ref/doc/uid/TP40008091-CH101-SW1
+https://developer.apple.com/documentation/foundation/operation
+
 Operation queues is one of the techniques to execute the Concurrent Programming in Apple platforms. 
 
 1. What are Operations?
@@ -22,3 +26,65 @@ If can execute the operation by yourself instead of adding into operation queue.
 NSInvocationOperation 
 NSBlockOperation 
 NSOperation 
+
+3. Explain NSInvocationOperation.
+A class you use as-is to create an operation object based on an object and selector from your application. 
+You can use this class in cases where you have an existing method that already performs the needed task. It does not require subclassing, you can 
+also use this class to create operation objects in a more dynamic fashion.
+
+This class executes the non-concurrent operation. 
+
+When to use this class?
+-> Use this class to avoid defining large numbers of custom operation objects for each task in your application, especially if you are 
+modifying an existing application and already have the objects and methods needed to perform the necessary tasks. 
+Example, You could use an invocation operation to perform a selector that is chosen dynamically based on the user input. 
+
+You can call this class by initialise.
+1. - initWithTarget:selector:object:
+Returns an NSInvocationOperation object initialized with the specified target and selector.
+2. - initWithInvocation:
+Returns an NSInvocationOperation object initialized with the specified invocation object.
+
+- (NSOperation *)taskWithData:(id) data {
+ NSInvocationOperation *op = [[NSInvocationOperation alloc] initWithTarget: self
+                                selector: @selector(myTaskMethod :) object: data]; 
+}
+
+- (void)myTaskMethod: (id)data {
+}
+
+4. Explain NSBlockOperation.
+A class you use as-is to execute one or more block objects concurrently. Because it can execute more than one block, a block operation object 
+operates using a group semantic, only when all of the associated blocks have finished executing is the operation itself considered as finished. 
+
+5. Explain NSOperation 
+The base class for defining custom operation objects. Subclassing NSOperation gives you complete control over the implementation of your own 
+operations, including the ability to alter the default way in which your operation executes and reports its status. 
+
+6. What are the key features supported by the Operations?
+1. Support for the establishment of graph-based dependencies between operation objects
+2. Support for an optional completion block, which is executed after the operation's main task finishes. 
+3. Support for monitoring changes to the execution state of your operations using KVO notifications. 
+4. Support for prioritizing operations and thereby affecting their relative execution order. 
+5. Support for cancelling semantics that allow you to halt an operation while it is executing. 
+
+7. How do you execute the non-concurrent(synchronous) operations?
+By default operation object run synchronously. 
+You can create an operation object, and start the operation by calling "start" method, doing so does not guarantee that the operation runs concurrently 
+with rest of your code. 
+The "isAsynchronous"("isConcurrent") method of the NSOperation class tells you whether an operation runs synchronously or asynchronously with respect to the 
+thread in which its "start" method was called. 
+By default, this method returns NO, which means the operation runs synchronously in the calling thread.
+
+8. How do you implement concurrent operations?
+There are two ways. 
+1. Manual way -> If you want to implement a concurrent operation—that is, one that runs asynchronously with respect to the calling thread—you must write additional code to start 
+the operation asynchronously. 
+For example, you might spawn a separate thread, call an asynchronous system function, or by submitting a blcok to a dispatch queue for execution or do anything else to ensure that the start method starts the task and returns immediately and, 
+in all likelihood, before the task is finished.
+2. If you add operation object to the operation queue, you do not need to implement concurrent operations. 
+ When you submit a nonconcurrent operation to an operation queue, the queue itself creates a thread on which to run your operation. Queue ignores
+the value of the isAsynchronous property and always calls the start() method from a seperate thread. 
+Thus, adding a nonconcurrent operation to an operation queue still results in the asynchronous execution of your operation object code.
+
+9. 
