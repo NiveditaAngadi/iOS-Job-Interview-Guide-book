@@ -56,6 +56,29 @@ Returns an NSInvocationOperation object initialized with the specified invocatio
 4. Explain NSBlockOperation.
 A class you use as-is to execute one or more block objects concurrently. Because it can execute more than one block, a block operation object 
 operates using a group semantic, only when all of the associated blocks have finished executing is the operation itself considered as finished. 
+Acts as wrapper for one or more block objects. This class provides an object-oriented wrapper for applications that are already using operation queues and do not
+want to create dispatch queues as well. 
+You can also use block operations to take advantage of operation dependencies, KVO notifications, and other features that might not be available with dispatch queues.
+When you create a block operation, you typically add at least one block at initialization time; you can add more blocks as needed later. 
+ When it comes time to execute an NSBlockOperation object, the object submits all of its blocks to the default-priority, concurrent dispatch queue. 
+The object then waits until all of the blocks finish executing. When the last block finishes executing, the operation object marks itself as finished.
+
+let queue = OperationQueue()
+queue.maxConcurrentOperationCount = 1
+
+let operation = BlockOperation {
+self.someTask("main block")
+}
+
+operation.addExecutionBlock {
+self.someTask("add block1")
+}
+
+operation.addExecutionBlock {
+self.someTask("add block2")
+}
+
+queue.addOperation(operation)
 
 5. Explain NSOperation 
 The base class for defining custom operation objects. Subclassing NSOperation gives you complete control over the implementation of your own 
@@ -87,4 +110,114 @@ in all likelihood, before the task is finished.
 the value of the isAsynchronous property and always calls the start() method from a seperate thread. 
 Thus, adding a nonconcurrent operation to an operation queue still results in the asynchronous execution of your operation object code.
 
-9. 
+9. How do you define custom operation object? 
+You can create a class - which is subclass of NSOperation. 
+Every operation object should implement at least following methods. 
+1. A custom initialization method - Need to put your operation object into known state 
+2. main - to perform your task. 
+
+Additional methods such as, 
+1. Custom methods that you plan to call from the implementation of your main method. 
+2. Accessor methods for setting data values and accessing the results of  the operation. 
+3. Methods of NSCoding protocol for archieve and unarchieve the operation object. 
+
+An operation begins executing, it continues performing its task until it is finished or until your code explicitly cancels the operation. 
+NSOperation provides a way for clients to cancel an operation, recognizing the cancellation event is voluntary by necessity.
+If an operation were terminated outright, there might not be a way to reclaim resources that had been allocated.
+As a result, operation objects are expected to check for cancellation events and to exit gracefully when they occur in the middle of the operation.
+
+To support cancellation in an operation object, 
+all you have to do is call the object’s isCancelled method periodically from your custom code and return immediately if it ever returns YES.
+
+Where should you call the cancellation check in the code?
+1. Immediately before you perform any actual work. 
+2. At least once during each iteration of a loop, or more frequently if each iteration is relatively long. 
+3. At any points in your code where it would be relatively easy to abort the operation. 
+
+10. What are the methods to support concurrent operation. 
+1. Start - is required method, all concurrent operations must override this method and replace the default behaviour with their own custom implementation. To execute an operation manually, you call its start method.
+Its where you setup the thread or other execution environment in which to execute your task. 
+2. main - optional method - this method typically used to implement the task associated with the operation object. 
+3. isExecuting and isFinished - required method - Concurrent operations are responsible for setting up their execution environment and reporting the status of that environment to outside clients. 
+Therefore, a concurrent operation must maintain some state information to know when it is executing its task and when it has finished that task. It must then report that state using these methods.
+4. isConcurrent - required method - To identify an operation as a concurrent operation, override this method and return YES.
+
+11. What are the KVO (key value observing) complaint in NSOperation class. 
+isCancelled
+isConcurrent 
+isExecuting 
+isFinished
+isReady 
+dependencies
+queuePriority
+completionBlock
+
+12. What are the customization you can carry on the operation object?
+The configuration of operation objects occurs after you have created them but before you add them to a queue.
+a. Configuring the interoperation dependencies 
+-> Dependencies are a way for you to serialize the execution of distinct operation objects. An operation that is dependent on other operations cannot begin executing until all of the operations on which it depends have finished executing. 
+Thus, you can use dependencies to create simple one-to-one dependencies between two operation objects or to build complex object dependency graphs.
+To establish dependencies between two operation objects, you use the addDependency: method of NSOperation. 
+This method creates a one-way dependency from the current operation object to the target operation you specify as a parameter. 
+This dependency means that the current object cannot begin executing until the target object finishes executing. 
+Dependencies are also not limited to operations in the same queue. Operation objects manage their own dependencies
+and so it is perfectly acceptable to create dependencies between operations and add them all to different queues. 
+One thing that is not acceptable, however, is to create circular dependencies between operations.
+Doing so is a programmer error that will prevent the affected operations from ever running.
+
+When all of an operation’s dependencies have themselves finished executing, an operation object normally becomes ready to execute.
+Dependencies rely on each operation object sending out appropriate KVO notifications whenever the status of the object changes.
+If you customize the behavior of your operation objects, you may need to generate 
+appropriate KVO notifications from your custom code in order to avoid causing issues with dependencies.
+
+b. Set the priority for the operation
+By the method -  setQueuePriority:
+Priority levels apply only to operations in the same operation queue.
+If your application has multiple operation queues, each prioritizes its own operations independently of any other queues. 
+Thus, it is still possible for low-priority operations to execute before high-priority operations in a different queue.
+
+Priority levels are not a substitute for dependencies. Priorities determine the order in which an operation queue starts executing 
+only those operations that are currently ready. For example, 
+if a queue contains both a high-priority and low-priority operation and both operations are ready, 
+the queue executes the high-priority operation first. However, if the high-priority operation is not ready but the low-priority operation is, 
+the queue executes the low-priority operation first. 
+If you want to prevent one operation from starting until another operation has finished, 
+you must use dependencies (as described in Configuring Interoperation Dependencies) instead.
+
+13. How do you execute the operations?
+You need to execute the operations in order to do the associated work. There are several ways to execute operations and you can manipulate the execution of your operations at 
+runtime. 
+1. Adding operations to an operation queue. 
+The easiest way to execute operations is to use an operation queue. 
+Your application is responsible for creating and maintaining any operation queues it intends to use. 
+An application can have any number of queues, but there are practical limits to how many operations may be executing at a given point in time.
+
+let queue = OperationQueue()
+queue.addOperation: 
+queue.addOperations: waitUntilFinished: 
+queue.addOperationWithBlock: {
+}
+
+2. Executing operations manually.
+ If you choose to execute operations manually, however, there are some precautions you should take in your code. 
+In particular, the operation must be ready to run and you must always start it using its start method.
+An operation is not considered able to run until its isReady method returns YES. 
+When executing an operation manually, you should always use the start method to begin execution. 
+You use this method, instead of main or some other method, because the start method performs several safety checks before it actually runs your custom code. In particular, 
+the default start method generates the KVO notifications that operations require to process their dependencies correctly. 
+This method also correctly avoids executing your operation if it has already been canceled and throws an exception if your operation is not actually ready to run.
+
+14. How do you force a operation queue to run single operation. 
+Although the NSOperationQueue class is designed for the concurrent execution of operations, it is possible to force a single queue to run only one operation at a time.
+The setMaxConcurrentOperationCount: method lets you configure the maximum number of concurrent operations for an operation queue object. Passing a value of 1 to this method causes the queue to execute only one operation at a time.
+
+15. Can operations be cancelled once added to the opearation queue. 
+Once added to an operation queue, an operation object is effectively owned by the queue and cannot be removed. The only way to dequeue an operation is to cancel it. 
+You can cancel a single individual operation object by calling its cancel method 
+or 
+you can cancel all of the operation objects in a queue by calling the cancelAllOperations method of the queue object.
+
+15. Can you suspend or resume queues?
+Yes. You can suspend(temporary halt) to the execution of operations, you can suspend the corresponding operation queue using the setSuspended: method. 
+Suspending a queue does not cause already executing operations to pause in the middle of their tasks. It simply prevents new operations from being scheduled for execution.
+You might suspend a queue in response to a user request to pause any ongoing work, because the expectation is that the user might eventually want to resume that work.
