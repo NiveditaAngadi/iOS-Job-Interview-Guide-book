@@ -1,1 +1,61 @@
+1. What is GCD - Grand Central Dispatch?
 Grand Cetral Dispatch (GCD) dispatch queues are a powerful tool for performing tasks. 
+It let you execute arbitrary blocks of code either asynchronously or synchronously with respect to the caller.
+
+A dispatch queue is an object-like strcuture that manages the tasks you submit to it. 
+All dispatch queues are first-in, first-out data structures. 
+Thus the tasks you add to a queue are always started in the same order they were added. 
+
+GCD provides some dispatch queues automatically and some are developer needs to create as per the specific purpose. 
+
+2. What are the types of dispatch queues?
+  a. Serial 
+  b. Concurrent 
+  c. Main Dispatch Queue 
+
+3. What is serial disptch queue?
+Serial queues (also known as private dispatch queues) execute one task at a time in the order in which they are added to the queue. 
+The currently executing task runs on a distinct thread that is managed by the dispatch queue. Serial queues are often used to synchronize
+access to a specific resource. 
+
+4. What is concurrent dispatch queue?
+Concurrent queues (also knowns as global dispatch queues) execute one or more tasks concurrently, but tasks are still started in the order in which 
+they are added to the queue. 
+The currently executing tasks run on distinct thereads are managed by the disptach queue. 
+You can create concurrent disptch queues by specifying DISPATCH_QUEUE_CONCURRENT as the queue type. 
+There are four predfined global concurrent queues for your application to use.
+
+5. What is main dispatch queue?
+The main dispatch queue is a globally available serial queue that executes tasks on the application's main thread. 
+The queue works with the application's run loop to interleave the execution of queued tasks with execution of other event sources attached to the 
+run loop. 
+Becuase it runs on your application's main thread, the main queue is often used as a key synchronization point for an application. 
+
+6. What are the advantages of using dispatch queue as compare to thread?
+1. The advantages of dispatch queues are they are simpler to use and much more efficient at executing those tasks than the corresponding 
+threaded code. 
+With the threads you have to write code both for the work you want to perform and for the creation and creation and management of the threads 
+themselves.
+Dispatch queues let you focus on the work you actually want to perform without having to worry about the thread creation and managment. 
+The thread creation and management responsibilities taken by the system efficiently based on the availability of resources. 
+
+2. Queue-based synchronization is more efficient than locks because locks always require an expensive kernel trap in both 
+the contested and uncontested cases, where as a dispatch queue works primarily in your application's process space and only calls down to the 
+kernel when absolutely necessary. 
+
+7. What are the key points to remember about dispatch queues?
+ a. Dispatch queue execute their tasks concurrently with respect to other dispatch queues. The serialization of tasks limited to the tasks in a single 
+dispatch queue.
+ b. The system determines the total number of tasks executing at any one time. 
+ c. The suystem takes queue priority levels into account when chosing which new task to start. 
+ d. Tasks in a queue must be ready to execute at the time they are added to the queue. 
+ e. Private dispatch queues are refrence counted. In addition to the queue retaining in your code,  be aware that dispatch sources can also be 
+attached to a queue and also increment its retain count. 
+Thus, you must make sure that all dispatch sources are canceled and all retain calls are balanced with an appropriate release call.
+
+8. What are queue-related technologies provided by GCD?
+  a. Dispatch groups -> Way to monitor a set of block objects for completion. 
+  b. Disptach semaphore -> Simillar to the semaphore but is generally more efficient. 
+  c. Dispatch sources -> A dispatch source generates notifications in response to specific types of system events. You can use dispatch sources
+to monitor events such as process notifications, signals, and descriptor events among others. 
+
