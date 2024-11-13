@@ -23,6 +23,10 @@ Rather than creating threads directly, applications need only specific tasks and
 Advatages of this approach are, 
 1. By letting the system manage the threads, applications gain a level of scalability not possible with threads. 
 2. Application developers also gain a simpler and more efficient programming model. 
+3. It reduces the memory penalty your application pays for storing thread stacks in the application's memory space.
+4. It eleminates the code needed to create and configure your threads.
+5. It eleminates the code needed to manage and schedule work on threads. 
+6. It simplifies the code you have to write.
 
 *** Terminology *** 
 Thread -> Used to refer to a separate path of execution for code. 
@@ -100,5 +104,6 @@ Operation queues always execute operations concurrently, you can use dependencie
 What is OpenCL?
 In OSX, the Open Computing Langauge(OpenCL) is a standards-based technology for performing general-purpose computations on a computer's 
 graphics processor. 
+
 
 
