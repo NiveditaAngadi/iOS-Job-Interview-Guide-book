@@ -1,1 +1,60 @@
 https://github.com/swiftlang/swift-evolution/blob/main/proposals/0296-async-await.md#motivation-completion-handlers-are-suboptimal
+
+https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency
+
+1. Why async/await designed?
+Modern Swift development involves a lot of asynchronous (or async) programming using closures and completion handlers, 
+but these APIs are to use. 
+This gets particularly problematic when many asynchronous operations are used, 
+error handling is required, or control flow between asynchronous calls gets complicated. 
+async and await is the language extension to make this a lot more natural and less error prone. 
+
+Async/await - design introduces a coroutine model to Swift. 
+Async functions allow asynchronous functions with concurrently-executing tasks and provides 
+APIs for creating, querying, and cancelling tasks.
+
+2. What is coroutine model? 
+A coroutine is a computer program component that allows for the suspension and resumption of execution. 
+Coroutines are lightweight threads that can be used to, 
+1. simplify code that executes asynchronously. 
+2. manage long-running tasks. 
+3. implement cooperative tasks, exceptions, event loops, infinite lists, and pipes. 
+4. perform an operation over time instead of instantly. 
+
+Functions whose execution you can pause. 
+Functions can opt into being async, allowing the programmer to compose complex logic involving asynchronous operations using the normal control-flow mechanisms. 
+The compiler is responsible for translating an asynchronous function into an appropriate set of closures and state machines.
+
+3. Define async/await.
+Asynchronous functions - often known as async/await - allow asynchronous code to be written as if it were straight-line, synchrnous code.
+The use of async/await naturally preserves the semantic structure of the code providing information necessary for atleast three cross-cutting 
+improvements to the language. 
+1. Better performance for asynchronous code. 
+2. Better tooling to provide a more consistent experience while debugging, profiling, and exploring code. 
+3. A foundation for future concurrency features like task priority and cancellation. 
+
+4. What is the difference between Synchronous and Asynchronous functions?
+Synchronous function can make a call, when it does, the function immediately waits for the call to complete.
+Once the call completes, control returns to the function and picks up where it left off. 
+
+Asynchronous function - it can make calls as usual, when it does it immediately waits for the call to complete. 
+Once the call completes, control returns to the function and it picks up where it was. 
+
+The only difference is that synchronous functions get to take full advantage of (part of) their thread and its stack, 
+whereas asynchronous functions are able to completely give up that stack and use their own, separate storage. 
+
+Because asynchronous functions must be able to abandon their thread, and synchronous functions don’t know how to abandon a thread, 
+a synchronous function can’t ordinarily call an asynchronous function: 
+
+In contrast, an asynchrnous function can call either synchronous or asynchrnous functions. 
+While it’s calling a synchronous function, of course, it can’t give up its thread. 
+
+In fact, asynchronous functions never just spontaneously give up their thread; 
+they only give up their thread when they reach what’s called a suspension point. 
+A suspension point can occur directly within a function, 
+or it can occur within another asynchronous function that the function calls, 
+but in either case the function and all of its asynchronous callers simultaneously abandon the thread.
+
+
+
+
