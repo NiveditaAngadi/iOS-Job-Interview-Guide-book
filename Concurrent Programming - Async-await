@@ -22,7 +22,8 @@ Coroutines are lightweight threads that can be used to,
 4. perform an operation over time instead of instantly. 
 
 Functions whose execution you can pause. 
-Functions can opt into being async, allowing the programmer to compose complex logic involving asynchronous operations using the normal control-flow mechanisms. 
+Functions can opt into being async, allowing the programmer to compose complex logic involving 
+asynchronous operations using the normal control-flow mechanisms. 
 The compiler is responsible for translating an asynchronous function into an appropriate set of closures and state machines.
 
 3. Define async/await.
@@ -55,6 +56,62 @@ A suspension point can occur directly within a function,
 or it can occur within another asynchronous function that the function calls, 
 but in either case the function and all of its asynchronous callers simultaneously abandon the thread.
 
+5. What is suspension point?
+A suspension point is a point in the execution of an asynchronous function where it has to give up its thread. 
+Suspension points are always associated with some deterministic, syntatically explicit event in the function. They're never hidden
+or asynchronous from the function's perspective.
 
+It is important that suspension points are only associated with explicit operations.
+In fact, it’s so important that this proposal requires that calls that might suspend be enclosed in an "await" expression.
+These calls are referred to as potential suspension points, because it is not known statically whether they will actually suspend: 
+that depends both on code not visible at the call site (e.g., the callee might depend on asynchronous I/O) 
+as well as dynamic conditions (e.g., whether that asynchronous I/O will have to wait to complete).
 
+The requirement for "await" on potential suspension points follows Swift's precedent of requiring "try" expressions to cover calls 
+to functions that can throw errors.
 
+6. How do you determine the async function?
+By marking the function as "async" - indicating the function is asynchronous.
+
+7. Which functions can not be asynchronous?
+deinit 
+storage accessors(i.e., the getters and setters for properties and subscripts) cannot be async. 
+
+8. Define the function types?
+struct FunctionTypes {
+  var syncNonThrowing: () -> Void 
+  var syncThrowing: () throws -> Void 
+  var asyncNonThrowing: () async -> Void 
+  var asynThrowing: () async throws -> Void 
+
+ mutating func demonstrateConversions() {
+    // Okay to add 'async' and/or 'throws'    
+    asyncNonThrowing = syncNonThrowing
+    asyncThrowing = syncThrowing
+    syncThrowing = syncNonThrowing
+    asyncThrowing = asyncNonThrowing
+    
+    // Error to remove 'async' or 'throws'
+    syncNonThrowing = asyncNonThrowing // error
+    syncThrowing = asyncThrowing       // error
+    syncNonThrowing = syncThrowing     // error
+    asyncNonThrowing = syncThrowing    // error
+  }
+}
+
+9. What is await expression? 
+A call to value of async function type(including a direct call to an async function) introduces a potential suspension point. 
+Any potential suspension point must occur within an asynchronous context( async function). 
+Furthermore, it must occur  within operand of an await expression. 
+
+// func redirectURL(for url: URL) async -> URL { ... }
+// func dataTask(with: URL) async throws -> (Data, URLResponse) { ... }
+
+let newURL = await server.redirectURL(for: url)
+let (data, response) = try await session.dataTask(with: newURL)
+
+10. Where suspension point not occur?
+1. A potential suspension point must not occur within autoclosure that is not of async function. 
+2. A potential suspension point must not occur within defer block. 
+
+11.
