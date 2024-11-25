@@ -1,62 +1,69 @@
 ##Basics##
-Why Swift is called Type Safe language?
+1. Why Swift is called Type Safe language?
 Ans: Swift is a type-safe language, which means the language helps you to be clear about the types of values your code can work with. 
 A type safe language encourages you to be clear about the types of values your code can work with. 
-If part of your code requires a String, type safety prevents you from passing it an Int by mistake. Likewise, type safety prevents you from accidentally passing an optional String to a piece of code that requires a non-optional String. 
+If part of your code requires a String, type safety prevents you from passing it an Int by mistake. Likewise, type safety prevents 
+you from accidentally passing an optional String to a piece of code that requires a non-optional String. 
 Type safety helps you catch and fix errors as early as possible in the development process.
 Because Swift is type safe, it performs type checks when compiling your code and flags any mismatched types as errors.
 This enables you to catch and fix errors as early as possible in the development process.
 
-Value of the constant can not be changed once it's set. Define by the "let". 
-let maximumNumberOfLoginAttempts = 10
-var currentLoginAttempt = 0
+2. Value of the constant can not be changed once it's set. Define by the "let". 
 
 “Declare a new constant called maximumNumberOfLoginAttempts, and give it a value of 10. Then, declare a new variable called currentLoginAttempt, 
 and give it an initial value of 0.”
+let maximumNumberOfLoginAttempts = 10
+var currentLoginAttempt = 0
 
-When to use let / var? 
-Ans: If a stored value in your code won’t change, always declare it as a constant with the let keyword. Use variables only for storing values that change.
+3. When to use let / var? 
+Ans: If a stored value in your code won’t change, always declare it as a constant with the let keyword. 
+Use variables only for storing values that change.
 
 When you declare a constant or a variable, you can give it a value as part of that declaration, like the examples above. 
-Alternatively, you can assign its initial value later in the program, as long as it’s guaranteed to have a value before the first time you read from it.
+Alternatively, you can assign its initial value later in the program, 
+as long as it’s guaranteed to have a value before the first time you read from it.
 
-Type annotations - Way to provide information about what kind of data. 
+4. Type annotations - Way to provide information about what kind of data. 
 var welcomeMessage: String
 
-Type inference - When you provide the initial value to the constant or variable - swift automatically infer the type of data. 
+5. Type inference - When you provide the initial value to the constant or variable - swift automatically infer the type of data. 
 Type inference enables a compiler to deduce the type of a particular expression automatically when it compiles your code, 
 simply by examining the values you provide.
 
-Naming Constant/ Variable ->
+6. Naming Constant/ Variable ->
 Constant and variable names can contain almost any character, including Unicode characters:
-Constant and variable names can’t contain whitespace characters, mathematical symbols, arrows, private-use Unicode scalar values, or line- and box-drawing characters. 
+Constant and variable names can’t contain whitespace characters, mathematical symbols, arrows, 
+private-use Unicode scalar values, or line- and box-drawing characters. 
 Nor can they begin with a number, although numbers may be included elsewhere within the name.
 
-You can print the current value of a constant or variable with the print(_:separator:terminator:) function: 
+7. You can print the current value of a constant or variable with the print(_:separator:terminator:) function: 
 Its global function. 
 
-String Interpolation -> 
+8. String Interpolation -> 
 Swift uses string interpolation to include the name of a cnstant or variable as a placeholder in a longer string, 
 and to prompt Swift to replace it with the current value of that constant or variable. 
 Wrap the name in parentheses and escape it with a backslash before the opening parenthesis:
+let a = 10 
+print("Value of a is \(a)")
 
-Difference between Double and Float?
+9.Difference between Double and Float?
 Double represents a 64-bit floating-point number. Precision of at least 15 decimal digits. 
 Float represents a 32-bit floating-point number. Precision of at least 6 decimal digits.
 In situations where either type would be appropriate, Double is preferred. 
 Swift always chooses Double (rather than Float) when inferring the type of floating-point numbers.
 
-What is Type Aliases?
-Type aliases define an alternative name for an existing type. You define type aliases with the typealias keyword.
+10.What is Type Aliases?
+Type aliases define an alternative name for an existing type. You define type aliases with the "typealias" keyword.
 
-What is Tuples?
-Tuples group multiple values into a single compound value. The values within a tuple can be of any type and don’t have to be of the same type as each other.
+11. What is Tuples?
+Tuples group multiple values into a single compound value. 
+The values within a tuple can be of any type and don’t have to be of the same type as each other.
 Example: let http404Error = (404, "Not Found")
-If you only need some of the tuple’s values, ignore parts of the tuple with an underscore (_) when you decompose the tuple
+If you only need some of the tuple’s values, ignore parts of the tuple with an underscore (_) when you decompose the tuple.
 Alternatively, access the individual element values in a tuple using index numbers starting at zero.
 You can name the individual elements in a tuple when the tuple is defined and also can access value from that name. 
 
-What is Optional?
+11. What is Optional?
 You use optionals in situations where a value may be absent. 
 An optional represents two possibilities: Either there is a value of a specified type, 
 and you can unwrap the optional to access that value, or there isn’t a value at all.
@@ -64,11 +71,20 @@ To write an optional type, you write a question mark (?) after the name of the t
 for example, the type of an optional Int is Int?. An optional Int always contains either some Int value or no value at all. 
 It can’t contain anything else, like a Bool or String value.
 
-What is nil?
+A type that represents either a wrapped value or the absence of a value.
+@frozen 
+enum Optional<Wrapped> where Wrapped : ~Copyable
+
+enum Optional<Wrapped>: ExpressibleByNilLiteral {
+ case none 
+ case some(Wrapped)
+}
+
+12. What is nil?
 Valueless state
 You set an optional variable to a valueless state by assigning it the special value nil:
 If you define an optional variable without providing a default value, the variable is automatically set to nil
-You can use an if statement to find out whether an optional contains a value by comparing the optional against nil.
+You can use an "if" statement to find out whether an optional contains a value by comparing the optional against nil.
 
 When you access an optional value, your code always handles both the nil and non-nil case. 
 There are several things you can do when a value is missing, as described in the following sections:
@@ -81,23 +97,27 @@ Note:
 In Objective-C, nil is a pointer to a nonexistent object. In Swift, nil isn’t a pointer — it’s the absence of a value of a certain type.
 Optionals of any type can be set to nil, not just object types.
 
-What is Optional Binding?
-You use optional binding to find out whether an optional contains a value, and if so, to make that value available as a temporary constant or variable.
-Ways for optional binding?
-- if let 
+13. What is Optional Binding?
+You use optional binding to find out whether an optional contains a value, and if so, 
+to make that value available as a temporary constant or variable.
+
+14. Ways for optional binding?
+a. - if let 
 : if let <#constantName#> = <#someOptional#> {
    <#statements#>
 }
-- guard
-- while 
+b. - guard
+c. - while 
 You can extract that value into constant and variable. 
 
-Another way to handle the missing value is providing a default value using ?? (nil-coalescing operator).
+d. Another way to handle the missing value is providing a default value using ?? (nil-coalescing operator).
 
-Force-unwrap - 
-When nil represents an unrecoverable failure, such as a programmer error or corrupted state, you can access the underlying value by adding an exclamation mark (!) to the end of the optional’s name. 
-This is known as force unwrapping the optional’s value. 
-When you force unwrap a non-nil value, the result is its unwrapped value. Force unwrapping a nil value triggers a runtime error.
+e. Force-unwrap - 
+When nil represents an unrecoverable failure, such as a programmer error or corrupted state, 
+you can access the underlying value by adding an exclamation mark (!) to the end of the optional’s name. 
+This is known as force unwrapping the optional’s value.
+When you force unwrap a non-nil value, the result is its unwrapped value. 
+Force unwrapping a nil value triggers a runtime error.
 The ! is, effectively, a shorter spelling of fatalError(_:file:line:). For example, the code below shows two equivalent approaches:
 
 let possibleNumber = "123"
@@ -108,16 +128,17 @@ guard let number = convertedNumber else {
     fatalError("The number was invalid")
 }
 
-Implicitly Unwrapped Optionals:
+15. Implicitly Unwrapped Optionals:
 Sometimes it’s clear from a program’s structure that an optional will always have a value, after that value is first set. 
-In these cases, it’s useful to remove the need to check and unwrap the optional’s value every time it’s accessed, because it can be safely assumed to have a value all of the time.
-These kinds of optionals are defined as implicitly unwrapped optionals.
-Implicitly unwrapped optionals are useful when an optional’s value is confirmed to exist immediately after the optional is first defined and can definitely be assumed to exist at every point thereafter. 
+In these cases, it’s useful to remove the need to check and unwrap the optional’s value every time it’s accessed, 
+because it can be safely assumed to have a value all of the time.These kinds of optionals are defined as implicitly unwrapped optionals.
+Implicitly unwrapped optionals are useful when an optional’s value is confirmed to exist immediately 
+after the optional is first defined and can definitely be assumed to exist at every point thereafter. 
 The primary use of implicitly unwrapped optionals in Swift is during class initialization.
 Don’t use an implicitly unwrapped optional when there’s a possibility of a variable becoming nil at a later point. 
 Always use a normal optional type if you need to check for a nil value during the lifetime of a variable.
 
-Error Handling:
+16. Error Handling:
 When a function encounters an error condition, it throws an error. That function’s caller can then catch the error and respond appropriately.
 func canThrowAnError() throws {
     // this function may or may not throw an error
