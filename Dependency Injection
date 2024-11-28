@@ -1,0 +1,43 @@
+Reference:
+https://www.kodeco.com/14223279-dependency-injection-tutorial-for-ios-getting-started/page/2
+https://blog.pragmaticengineer.com/dependency-injection-in-ios-and-android-apps/
+https://medium.com/digigeek/39-challenges-on-building-mobile-apps-at-scale-part-1-challenges-due-to-the-nature-of-mobile-58e5bac50fb
+http://www.jamesshore.com/v2/blog/2006/dependency-injection-demystified
+https://medium.com/sahibinden-technology/dependency-injection-in-swift-11756a07a064#:~:text=Dependency%20Injection%20is%20a%20software%20design%20pattern%20that%20allows%20you,object%20is%20called%20a%20service.
+
+
+1. What is Dependency Injection(DI)?
+Dependency Injection(DI) is a design pattern in iOS that improves the architecture of an app by making it more maintainable, testable, and modular. 
+
+DI involves passing objects to a class from external sources instead of creating them internally. 
+
+DI is a software design pattern that allows you to use a technique in which an object receives other objects that it depends on. These other objects are called dependecies. 
+Receiving object is called a client and the passed(injected)object is called a service. 
+
+[Injector] (Entity) Injects [Client] uses [Service]
+The code that passes the service to the client can be many kinds of things and is called the injector.
+Instead of the client specifying which service it will use, the injector tells the client what servcie to use. 
+The "injection" refers to the passing of dependency(a service) into the object(a client)that would use it. 
+
+2. What are the benefits of DI?
+1. Testability - DI makes it easier to replace dependencies with mock objects during testing. 
+2. Flexibility - DI promotes the use of interfaces and protocols, which allow replacing dependencies with alternative implementation. 
+3. Modularity - DI reduces coupling and increases modularity by allowing object to focus on their primary responsibilities.
+
+3. DI is based on which principle?
+DI is based on the Inversion of control (IoC). 
+Inversion of Control is a pattern that lets you invert the flow of control. To achieve this you move all the responsibilities 
+of a class, except its main one, outside, making them  its dependencies. Through abstraction you make the dependencies easily interchangeable.
+
+Your class, the DI object, isn't aware of the implementation its dependencies, the DI service objects. It also doesn't know how to create them. This makes
+the code testable and maintainable by eliminating tightly coupled relationships between classes. 
+
+4. What are the ways you can implement DI?
+1. Constructor or Initializer Injection 
+2. Setter or method Injection 
+3. Interface Injection 
+
+5. What is Dependency Injection Container or DI Container?
+DI container is another important Dependency Injection concept. A DI container is responsible for registering and resolving all dependencies in your project. 
+Depending on the DI Container’s complexity, it can take care of the dependencies’ life cycles and automatically inject them whenever necessary on its own.
+
