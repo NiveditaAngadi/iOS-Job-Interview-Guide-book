@@ -193,18 +193,300 @@ to use concurrency, and then start converting the functions and methods that it 
 at a time. 
 There's no way to take a bottom-up approach, because synchrnous code can't ever call asynchronous code. 
 
-20. What is Asynchrnous sequence?
+20. What is Asynchronous sequence?
+Using asynchronous sequence - you can wait for one element of the collection at a time. 
 
-21. Asynchrnous Functions in parallel.
+A for-await-in loop potentially suspends execution at the beginning of each iteration, when it’s waiting for the next element to be available.
 
-22. Tasks and Task Group 
+import Foundation 
 
-23. Task Cancellation 
+let handle = FileHandle.standardInput
+for try await line in handle.bytes.lines {
+ print(line)
+}
 
-24. Unstructured concurrency 
+21. Why calling asynchrnous function in parallel is in need?
+Calling an asynchrnous function with await runs only one piece code at a time. While asynchronous code is running, the caller waits for that code to finish before moving on 
+to run the next line of code. 
+Example, 
+To fetch three photos from a gallery, you could await three calls to the downloadPhoto(named:) function as follows, 
 
-25. Actors 
+let firstPhoto = await downloadPhoto(named: photoNames[0])
+let secondPhoto = await downloadPhoto(named: photoNames[1])
+let thirdPhoto = await downloadPhoto(named: photoNames[2])
 
-26. Sendable types 
+let photos = [firstPhoto, secondPhoto, thirdPhoto]
+show(photos)
+
+This approach has an important drawback: Although the download is asynchronous 
+and lets other work happen while it progresses, only one call to downloadPhoto(named:) runs at a time. 
+Each photo downloads completely before the next one starts downloading. 
+However, there’s no need for these operations to wait — each photo can download independently, or even at the same time.
+
+22. How do you call asynchrnous function parallel?
+To call asynchrnous function and let it run in parallel with code around it, write async in front of "let" when you define a constant, and then write await each time you use the constant.
+
+async let firstPhoto = downloadPhoto(named: photoNames[0])
+async let secondPhoto = downloadPhoto(named: photoNames[1])
+async let thirdPhoto = downloadPhoto(named: photoNames[2])
+
+let photos = await [firstPhoto, secondPhoto, thirdPhoto]
+show(photos)
+
+In this example, download photo method executes without waiting for previous to complete. Execution continues independently, until the line where "photos" is defined - 
+at that point, the program needs the results from these asynchronous calls, so you write await to pause execution until all three photos finish downloading. 
+
+23. Important points while running code with async, await, aync let. 
+1. Call asynchronous functions with await when the code on the following lines depends on that function's result. This creates work that is carries out sequentially. 
+2. Call asynchronous function with async-let when you don't need the result until later in your code. This creates work that can be carried out in parallel. 
+3. Both await and async-let allow other code to run while they're suspended. 
+4. In both cases, you mark the possible suspension point with await to indicate that execution will pause, if needed, until an asynchronous function has returned. 
+
+23. What Task?
+Task is a unit of work that can be run asynchronously as part of your program. 
+A task itself does only one thing at a time.
+When multiple tasks are created, swift can schedule them to run simultaneously. 
+
+24. How the child task created?
+You can create child task implicitly by "async-let" syntax
+async let firstPhoto = downloadPhoto(named: photoNames[0])
+
+25. What is task group?
+A group that contains dynamically created child tasks. 
+To create a task group, call the withTaskGroup(of:returning:body:) method.
+Task group gives you more control over priority and cancellation and lets you create a dynamic number of tasks. 
+
+26. Why not to use task group from outside the task where you created it?
+Adding a child task to the task group is a mutating operation.
+Mutation operation can't be performed from a concurrent execution context like a child task. 
+Swift type system prevents a task group from escaping like for the very same reason. 
+
+26. What is Task Execution order in Task Group?
+Tasks added to a task group execute concurrently, and may be scheduled in any order. 
+
+27. What is Strcutured Concurrency?
+Tasks are arranged in a hierarchy. Each task in a given task group has the same parent task, and each task can have 
+child tasks. Because of the explicit relationship between tasks and task groups, this approach is called Structured Concurrency.
+
+28. What are the benefits of structured concurrency?
+1. In a parent task, you can't forget to wait for its child tasks to complete. 
+2. When setting a higher-priority on a child task, the parent task's priority is automatically escalated. 
+3. When a parent task is canceled, each of its child tasks is also automatically canceled. 
+4. Task-local values propogates to child tasks efficiently and automatically. 
+
+29. Explain the Task Group with example.
+
+await withTaskGroup(of: Data.self) { group in 
+ let photoNames = await listPhotos(inGallery: "Summer Vacation") 
+ for name in photoNames {
+  group.addTask {
+     return await downloadPhoto(named: name)
+  }
+ }
+ for await photo in group {
+  show(photo)
+ }
+
+In the above code, swift runs as many these tasks concurrently as conditions allow.
+As soon as child task finsihes downloading the photo, that photo is displayed. 
+There's no guarantee about the order that child tasks complete, so the photos from this gallery can be shown in any order.
+
+Task group with result. 
+For a task group that returns a result, you add code that accumulates its result inside the closure you pass to withTaskGroup(of: returning:body:).
+
+let photos = await withTaskGroup(of: Data.self) { group in 
+let photoNames = await listPhotos(inGallery: "Summer Vacation")
+for name in photoNames {
+  group.addTask {
+     return await downloadPhoto(named: name)
+   }
+ } 
+  var results: [Data] = []
+  for await photo in group {
+    results.append(photo)
+  }
+
+  return results
+}
+
+30. Explain Task Cancellations concept in Swift Concurrency?
+Swift Concurrency uses a cooperative cancellation model.
+Each task checks whether it has been canceled at the appropriate points in its execution, and responds to cancellation appropriately. 
+Depending on what each work the task is doing, responding to cancellation usually means one of the following. 
+1. Throwing an error like CancellationError
+2. Returning nil or an empty collection
+3. Returning the partially completed work
+
+31. Explain the ways in which tasks inform when the tasks are cancelled.
+1. By calling the Task.checkCancellation() type method. 
+  Throws an error, if task has canceled, a throwing task propogate the error out of the task, stopping all of the task's work. This has the advantage of being simple to implement
+and understand.
+2. By reading the Task.isCancelled type property.
+More flexible, which let you perform clean-up work as part of stopping the task, like closing network connections and deleting temprorary files.
+
+let photos = await withTaskGroup(of: Optional<Data>.self) { group in 
+let photoNames = await listPhotos(inGallery: "Summer Vacation")
+for name in photoNames {
+ let added = group.addTaskUnlessCancelled {
+  guard !Task.isCancelled else { return nil }
+  return await downloadPhoto(named: name)
+ }
+ guard added else { break } 
+}
+ var results: [Data] = [] 
+ for await photo in group {
+  if let photo { results.append(photo) }
+  }
+
+ return results
+}
+
+32. How do you send the immediate notification when task is cancelled?
+Use the "Task.withTaskCancellationHandler(operation:onCancel:isolation:)" method.
+
+let task = await Task.withTaskCancellationHandler {
+//...
+} onCancel: {
+ print("Cancelled")
+}
+
+// ... some time later ... 
+task.cancel()
+
+Because the task is still running when the cancellation handler starts, avoid sharing state between the task and its cancellation handler, which could create a race condition.
+
+33. What is the cancellation behaviour of Task Group?
+A Task group becomes cancelled in one of the following ways, 
+1. When "cancelAll()" is invoked on it. 
+2. When the "Task" running this group is cancelled. 
+
+Since Task group is a structured concurrency primitive, cancellation is automatically propogated through all of its child-tasks(their child tasks). 
+
+34. How do you avoid adding child tasks to the already cancelled task group?
+A cancelled task group can still keep adding tasks, however they will being immediately cancelled, and may act accordingly to this. 
+To avoid adding new tasks to an already cancelled task group, use addTaskUnlessCancelled(priority:body:) 
+rather than the plain addTask(priority:body:) which adds tasks unconditionally.
+
+35. What is Unstructured Concurrency?
+Unlike tasks that are part of a task group, an unstructured task doesn't have a parent task.
+Programmer have complete flexibility to manage unstructured tasks in whatever way your program needs, but you're also completely responsible for their correctness.
+
+36. How do you create a unstructured task that runs on current actor?
+Call the "Task.init(priority: operation:) initializer. 
+You can interact with returned task such as wait for its result or to cancel it. 
+
+37. How do you create a unstructured task that's not part of the current actor?
+Unstructured task that's not part of the current actor, known more specifically as a "detached task".
+Call the "Task.detached(priority: operation:) class method. 
+You can interact with returned task such as wait for its result or to cancel it. 
+
+let newPhoto = // ... some photo data ... 
+let handle = Task {
+ return await add(newPhoto, toGalleryNamed: "Spring Adventures")
+}
+let result = await handle.value
+
+38. What is Actor?
+Actors let you share information between concurrent code. 
+You can use tasks to break up your program into isolated, concurrent pieces. 
+Tasks are isolated from each other, which is what makes it safe from them to run at the same time, but sometime you need to share some information between tasks. Actors play vital role
+in sharing information between concurrent code. 
+
+39. Actors are reference or value type?
+Actors are reference type such as classes. 
+Unlike classes, actors allow only one task to access their mutable state at a time, which makes it safe for code in multiple tasks interact with the same instance 
+of an actor. 
+
+You introduce an actor with the "actor" keyword. 
+
+For example, 
+actor TemperatureLogger {
+ let label: String 
+ var measurements: [Int]
+ private(set) var max: Int 
+
+  init(label: String, measurement: Int) {
+    self.label = label 
+    self.measurements = [measurement]
+    self.max = measurement
+  }
+}
+
+let logger = TemperatureLogger(label: "Outdoors", measurements: 25) 
+print(await logger.max)
+
+In this example, accessing logger.max is a possible suspension point. Because the actor allows only one task at a time to access its mutable state,
+if code from another task is already interacting with the logger, this code suspends while it waits to access the property.
+In contrast, code that’s part of the actor doesn’t write await when accessing the actor’s properties. 
+
+extension TemperatureLogger {
+ func update(with measurement: Int) {
+   measurements.append(measurement) 
+   if measurement > max {
+     max = measurement
+   }
+ }
+}
+
+40. What is Actor isolation?
+Swift guarantees that only code running on an actor can access that actor's local state. This guarantee is known as actor isolation. 
+
+41. How Swift Concurrency make it easier to reason about shared mutable state?
+1. Code in between possible suspension point runs sequentially, without the possibility of interruption from other concurrent code. 
+2. Code that interacts with an actor's local state runs only on that actor. 
+3. An actor runs only one piece of code at a time. 
+
+42. What is concurrency domain?
+Inside of a task or an instance of an actor, the part of a program that contains mutable state, like variables and properties, is called a concurrency domain. 
+Some kinds of data can't be shared between concurrency domains, because that data contains mutable state, but it doesn't protect against overlapping access. 
+
+43. What is Sendable Type?
+A type that can be shared from one concurrency domain to another is known as a sendable type. 
+For example, it can be passed as an argument when calling an actor method or be returned as the result of a task. 
+You mark a type as being sendable by declaring conformance to the Sendable protocol.
+That protocol doesn’t have any code requirements, but it does have semantic requirements that Swift enforces. 
+
+44. What are the ways for a type to be sendable?
+1. The type is a value type, and its mutable state is made of other sendable data -  for example, 
+a structure with stored properties that are sendable or
+an enumeration with associated values that are sendable.
+
+2. The type doesn't have any mutable state, and its immutable state is made up of other sendable data. 
+for example, a structure or class that has only read-only properties.
+
+3. The type has code that ensures the safety of its mutable state, like a class that's marked @MainActor or a class that serializes access to its properties on a particular 
+thread or queue. 
+
+For example, 
+struct TemperatureReading: Sendable {
+ var measurement: Int 
+}
+
+extension TemperatureLogger {
+ func addReading(from reading: TemperatureReading) {
+   measurements.append(reading.measurement)
+ }
+}
+
+let logger = TemperatureLogger(label: "Tea Kettle", measurement: 85)
+let reading = TemperatureReading(measurement: 45)
+
+await logger.addReading(from: reading)
+
+Because TemperatureReading is a structure that has only sendable properties, and the structure isn’t marked public or @usableFromInline, it’s implicitly sendable. 
+
+45. How do you mark a type explicit not being sendable?
+To explicitly mark a type as not being sendable, overriding an implicit conformance to the Sendable protocol, use an extension.
+
+struct FileDescriptor {
+  let rawValue: CInt
+}
+
+@available(*, unavailable)
+extension FileDescriptor: Sendable { }
+
+In the code above, the FileDescriptor is a structure that meets the criteria to be implicitly sendable. 
+However, the extension makes its conformance to Sendable unavailable, preventing the type from being sendable.
+
 
 
