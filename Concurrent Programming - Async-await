@@ -4,8 +4,7 @@ https://docs.swift.org/swift-book/documentation/the-swift-programming-language/c
 
 1. Why async/await designed?
 Modern Swift development involves a lot of asynchronous (or async) programming using closures and completion handlers, 
-but these APIs are to use. 
-This gets particularly problematic when many asynchronous operations are used, 
+but these APIs are to use. This gets particularly problematic when many asynchronous operations are used, 
 error handling is required, or control flow between asynchronous calls gets complicated. 
 async and await is the language extension to make this a lot more natural and less error prone. 
 
@@ -28,8 +27,8 @@ The compiler is responsible for translating an asynchronous function into an app
 
 3. Define async/await.
 Asynchronous functions - often known as async/await - allow asynchronous code to be written as if it were straight-line, synchrnous code.
-The use of async/await naturally preserves the semantic structure of the code providing information necessary for atleast three cross-cutting 
-improvements to the language. 
+The use of async/await naturally preserves the semantic structure of the code providing information 
+necessary for atleast three cross-cutting improvements to the language. 
 1. Better performance for asynchronous code. 
 2. Better tooling to provide a more consistent experience while debugging, profiling, and exploring code. 
 3. A foundation for future concurrency features like task priority and cancellation. 
@@ -114,4 +113,98 @@ let (data, response) = try await session.dataTask(with: newURL)
 1. A potential suspension point must not occur within autoclosure that is not of async function. 
 2. A potential suspension point must not occur within defer block. 
 
-11.
+11. What is Asynchronous code?
+Asynchrnous code can be suspended and resumed later, although only one piece of the program executes at a time. 
+Suspending and resuming code in your program lets it continue to make progress on short-term operations 
+like updating its UI while continuing to work on long-running operations like fetching data over the network or parsing files. 
+
+12. What is parallel code?
+Parallel code means multiple pieces of code run simultaneously - for example, a computer with a four-core processor can run 
+four pieces of code at the same time. 
+
+ A program that uses parallel and asynchronous code carries out multiple operations at a time, 
+and it suspends operations that are waiting for an external system.
+
+13. What is Asynchronous function or method?
+An asynchronous function or method is a special kind of function or method that can be suspended while it's partway through execution. 
+Asynchrnous function does one of the three things such as, either run to completion, throw an error, or never return, 
+along with that it can also pause in the middle when it's waiting for something. 
+
+You can mark one of these points where execution can be paused by "await" keyword.
+
+You can mark function with "async" to indicate its one. 
+For example, 
+
+func listPhotos(inGallery name: String) async -> [String] {
+ let result = // ... some asynchrnous networking code ... 
+ return result 
+}
+
+For a function or method that's both asynchronous and throwing, you write async before throws. 
+
+func listPhotos(inGallery name: String) async throws -> [String] { } 
+
+13. Explain suspenstion point with example. 
+When calling an asynchronous method, execution suspends until the method returns. You write "await" in front of the call to mark the possible
+suspension point. 
+
+Inside an asynchrnous method, the flow of execution is suspended only when you call another asynchrnous method - suspension is never 
+implicit or preemptive - which means every possible suspension point is marked with "await". 
+Marking all of the possible suspension points in your code helps make concurrent code easier to read and understand.
+
+let photoNames = await listPhotos(inGallery: "Summer Vacation")
+let sortedNames = photoNames.sorted()
+let name = sortedNames[0]
+let photo = await downloadPhoto(named: name)
+show(photo)
+
+14. What is yielding the thread means?
+The possible suspension points in your code marked with await indicate that the current piece of code might pause execution while 
+waiting for asynchronous function or method to return. This is so called yielding the thread, becuase behind the scenes,  Swift suspends the 
+execution of your code on the current thread and runs some other code on that thread instead. 
+
+15. In which places you can call Asynchrnous functions?
+1. Code in the body of an asynchrnous function, method or property. 
+2. Code in the static main() method of a structure, class or enumeration that's marked with @main
+3. Code in unstructured child task 
+
+16. How can you explicitly insert suspension point?
+You can explicitly insert a suspension point by calling the "Task.yield()" method. 
+
+17. How do you suspends task to learn about the concurrency?
+By calling "Task.sleep(for: tolerance: clock:) method, is useful when writing simple code to learn how concurrency works.
+This method suspends the current task for at least the given amount of time.
+
+func listPhotos(inGallery name: String) async throws -> [String] {
+try await Task.sleep(for: .second(2))
+return ["IMG001", "IMG99", "IMG0404"]
+}
+
+let photos = try await listPhotos(inGallery: "A Rainy Weekend")
+
+18. Synchrnous code never calls asynchronous code in Swift why?
+There is no safe way to wrap asynchronous code so you can call it from synchronous code and wait for the result. 
+Swift standard library intentionally omits this unsafe functionality - trying to implement it yourself can lead problems like 
+subtle races, threading issues, and deadlocks. 
+
+19. Ways to add concurrency feature to the existing code?
+When adding concurrency to the existing project, work from the top down. Specifically, start by converting the top-most layer of code
+to use concurrency, and then start converting the functions and methods that it calls, working through project's architecture one layer 
+at a time. 
+There's no way to take a bottom-up approach, because synchrnous code can't ever call asynchronous code. 
+
+20. What is Asynchrnous sequence?
+
+21. Asynchrnous Functions in parallel.
+
+22. Tasks and Task Group 
+
+23. Task Cancellation 
+
+24. Unstructured concurrency 
+
+25. Actors 
+
+26. Sendable types 
+
+
