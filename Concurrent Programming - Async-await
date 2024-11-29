@@ -3,8 +3,8 @@ https://github.com/swiftlang/swift-evolution/blob/main/proposals/0296-async-awai
 https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency
 
 1. Why async/await designed?
-Modern Swift development involves a lot of asynchronous (or async) programming using closures and completion handlers, 
-but these APIs are to use. This gets particularly problematic when many asynchronous operations are used, 
+Modern Swift development involves a lot of asynchronous (or async) programming using closures and completion handlers.
+This gets particularly problematic when many asynchronous operations are used, 
 error handling is required, or control flow between asynchronous calls gets complicated. 
 async and await is the language extension to make this a lot more natural and less error prone. 
 
@@ -21,14 +21,12 @@ Coroutines are lightweight threads that can be used to,
 4. perform an operation over time instead of instantly. 
 
 Functions whose execution you can pause. 
-Functions can opt into being async, allowing the programmer to compose complex logic involving 
-asynchronous operations using the normal control-flow mechanisms. 
+Functions can opt into being async, allowing the programmer to compose complex logic involving asynchronous operations using the normal control-flow mechanisms. 
 The compiler is responsible for translating an asynchronous function into an appropriate set of closures and state machines.
 
 3. Define async/await.
 Asynchronous functions - often known as async/await - allow asynchronous code to be written as if it were straight-line, synchrnous code.
-The use of async/await naturally preserves the semantic structure of the code providing information 
-necessary for atleast three cross-cutting improvements to the language. 
+The use of async/await naturally preserves the semantic structure of the code providing information necessary for atleast three cross-cutting improvements to the language. 
 1. Better performance for asynchronous code. 
 2. Better tooling to provide a more consistent experience while debugging, profiling, and exploring code. 
 3. A foundation for future concurrency features like task priority and cancellation. 
@@ -224,7 +222,7 @@ Each photo downloads completely before the next one starts downloading.
 However, there’s no need for these operations to wait — each photo can download independently, or even at the same time.
 
 22. How do you call asynchrnous function parallel?
-To call asynchrnous function and let it run in parallel with code around it, write async in front of "let" when you define a constant, and then write await each time you use the constant.
+To call asynchrnous function and let it run in parallel with code around it, write "async" in front of "let" when you define a constant, and then write "await" each time you use the constant.
 
 async let firstPhoto = downloadPhoto(named: photoNames[0])
 async let secondPhoto = downloadPhoto(named: photoNames[1])
@@ -240,7 +238,7 @@ at that point, the program needs the results from these asynchronous calls, so y
 1. Call asynchronous functions with await when the code on the following lines depends on that function's result. This creates work that is carries out sequentially. 
 2. Call asynchronous function with async-let when you don't need the result until later in your code. This creates work that can be carried out in parallel. 
 3. Both await and async-let allow other code to run while they're suspended. 
-4. In both cases, you mark the possible suspension point with await to indicate that execution will pause, if needed, until an asynchronous function has returned. 
+4. In both cases, you mark the possible suspension point with "await" to indicate that execution will pause, if needed, until an asynchronous function has returned. 
 
 23. What Task?
 Task is a unit of work that can be run asynchronously as part of your program. 
@@ -443,17 +441,15 @@ Some kinds of data can't be shared between concurrency domains, because that dat
 43. What is Sendable Type?
 A type that can be shared from one concurrency domain to another is known as a sendable type. 
 For example, it can be passed as an argument when calling an actor method or be returned as the result of a task. 
-You mark a type as being sendable by declaring conformance to the Sendable protocol.
+You mark a type as being sendable by declaring conformance to the "Sendable protocol".
 That protocol doesn’t have any code requirements, but it does have semantic requirements that Swift enforces. 
 
 44. What are the ways for a type to be sendable?
 1. The type is a value type, and its mutable state is made of other sendable data -  for example, 
 a structure with stored properties that are sendable or
 an enumeration with associated values that are sendable.
-
 2. The type doesn't have any mutable state, and its immutable state is made up of other sendable data. 
 for example, a structure or class that has only read-only properties.
-
 3. The type has code that ensures the safety of its mutable state, like a class that's marked @MainActor or a class that serializes access to its properties on a particular 
 thread or queue. 
 
