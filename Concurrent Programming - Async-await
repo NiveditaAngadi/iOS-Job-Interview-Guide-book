@@ -12,6 +12,16 @@ Async/await - design introduces a coroutine model to Swift.
 Async functions allow asynchronous functions with concurrently-executing tasks and provides 
 APIs for creating, querying, and cancelling tasks.
 
+func fetchData() async -> String {
+    return "Data fetched"
+}
+
+Task {
+    let data = await fetchData()
+    print(data)
+}
+
+
 2. What is coroutine model? 
 A coroutine is a computer program component that allows for the suspension and resumption of execution. 
 Coroutines are lightweight threads that can be used to, 
@@ -254,6 +264,17 @@ A group that contains dynamically created child tasks.
 To create a task group, call the withTaskGroup(of:returning:body:) method.
 Task group gives you more control over priority and cancellation and lets you create a dynamic number of tasks. 
 
+func performGroupTasks() async {
+    await withTaskGroup(of: String.self) { group in
+        group.addTask { "Task 1" }
+        group.addTask { "Task 2" }
+
+        for await result in group {
+            print(result)
+        }
+    }
+}
+
 26. Why not to use task group from outside the task where you created it?
 Adding a child task to the task group is a mutating operation.
 Mutation operation can't be performed from a concurrent execution context like a child task. 
@@ -271,6 +292,19 @@ child tasks. Because of the explicit relationship between tasks and task groups,
 2. When setting a higher-priority on a child task, the parent task's priority is automatically escalated. 
 3. When a parent task is canceled, each of its child tasks is also automatically canceled. 
 4. Task-local values propogates to child tasks efficiently and automatically. 
+
+func fetchData1() async -> String { "Data 1" }
+func fetchData2() async -> String { "Data 2" }
+
+func fetchAllData() async {
+    async let data1 = fetchData1()
+    async let data2 = fetchData2()
+    print(await data1, await data2)
+}
+
+Task {
+    await fetchAllData() // Ensures both tasks complete before exiting
+}
 
 29. Explain the Task Group with example.
 
@@ -384,6 +418,11 @@ let handle = Task {
 }
 let result = await handle.value
 
+let detachedTask = Task.detached {
+    print("Detached task running")
+}
+await detachedTask.value
+
 38. What is Actor?
 Actors let you share information between concurrent code. 
 You can use tasks to break up your program into isolated, concurrent pieces. 
@@ -484,5 +523,192 @@ extension FileDescriptor: Sendable { }
 In the code above, the FileDescriptor is a structure that meets the criteria to be implicitly sendable. 
 However, the extension makes its conformance to Sendable unavailable, preventing the type from being sendable.
 
+46. How does Task differ from DispatchQueue in Swift?
+	•	Task: Part of Swift’s concurrency model, it creates lightweight, structured tasks that support async/await. Tasks automatically manage their lifecycle, including cancellation and priority.
+	•	DispatchQueue: Part of GCD, it handles thread scheduling and task execution but lacks structured concurrency features.
 
+Task {
+    print("Running on a background thread")
+}
 
+47. What is the difference between async let and Task?
+	•	async let: Used to create child tasks that execute concurrently as part of the parent task. Automatically awaits child tasks when the parent task completes.
+	•	Task: Used to create standalone tasks that execute independently of the parent.
+
+async let: 
+func fetchData1() async -> String { "Data 1" }
+func fetchData2() async -> String { "Data 2" }
+
+func performTasks() async {
+    async let result1 = fetchData1()
+    async let result2 = fetchData2()
+    print(await result1, await result2) // Both execute concurrently
+}
+
+Task:
+Task {
+    let data = await fetchData1()
+    print(data)
+}
+
+48. What is the purpose of Task.sleep?
+Task.sleep suspends the current task for a specified duration. It accepts a value in nanoseconds.
+
+Task {
+    print("Task started")
+    try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+    print("Task resumed after sleep")
+}
+
+49.  How do you handle errors with async/await?
+Use do-catch blocks to handle errors in asynchronous functions.
+
+func fetchData() async throws -> String {
+    throw NSError(domain: "Error fetching data", code: 1, userInfo: nil)
+}
+
+Task {
+    do {
+        let data = try await fetchData()
+        print(data)
+    } catch {
+        print("Error: \(error.localizedDescription)")
+    }
+}
+
+50.  What is MainActor in Swift concurrency?
+MainActor ensures that the code runs on the main thread. It’s typically used for UI updates.
+
+@MainActor
+func updateUI() {
+    print("UI updated")
+}
+
+Task {
+    await updateUI()
+}
+
+51. What is the difference between Task.checkCancellation() and Task.isCancelled?
+	•	Task.isCancelled: A Boolean property to check if the task has been canceled.
+	•	Task.checkCancellation(): Throws a CancellationError if the task is canceled, immediately stopping execution.
+
+Task {
+    if Task.isCancelled {
+        print("Task was cancelled")
+        return
+    }
+
+    try Task.checkCancellation() // Throws a `CancellationError`
+}
+
+52. How does @Sendable affect Swift Concurrency?
+@Sendable ensures that a closure passed to a concurrent context is thread-safe by preventing it from capturing mutable state.
+
+Task {
+    let counter = 0
+    let task = Task {
+        @Sendable in
+        print("Counter: \(counter)") // This is safe because `counter` is immutable.
+    }
+    await task.value
+}
+Attempting to capture mutable variables or reference types without @Sendable can cause a compiler error or runtime issues.
+
+53. How do you prioritize tasks in Swift concurrency?
+You can specify a TaskPriority (e.g., .high, .medium, .low) when creating tasks. The system uses these priorities to allocate resources.
+
+let highPriorityTask = Task(priority: .high) {
+    print("High priority task")
+}
+
+let lowPriorityTask = Task(priority: .low) {
+    print("Low priority task")
+}
+
+await highPriorityTask.value
+await lowPriorityTask.value
+
+54. What are unstructured tasks, and when would you use them?
+Unstructured tasks (e.g., Task { }) are standalone tasks that are not tied to a parent task or hierarchy. Use them for fire-and-forget operations or when structured concurrency is unnecessary.
+
+Task {
+    print("Unstructured task running")
+}
+
+55. What happens if you call an async function on a background thread?
+If you call an async function on a background thread, it continues executing asynchronously 
+but may suspend to yield control back to the system until its task completes. 
+No explicit thread switching occurs unless specified using MainActor or Task.detached.
+
+56. What are Continuation and CheckedContinuation in Swift concurrency?
+Continuations bridge traditional callback-based code with Swift’s async/await.
+	•	CheckedContinuation: Ensures that the continuation is resumed exactly once, helping to avoid logic errors.
+	•	UnsafeContinuation: Does not enforce single resumption, so it must be used cautiously.
+
+func fetchData(completion: @escaping (String) -> Void) {
+    DispatchQueue.global().async {
+        completion("Fetched data")
+    }
+}
+
+func fetchDataAsync() async -> String {
+    await withCheckedContinuation { continuation in
+        fetchData { result in
+            continuation.resume(returning: result)
+        }
+    }
+}
+
+Task {
+    let result = await fetchDataAsync()
+    print(result)
+}
+
+57. How does the @MainActor attribute interact with global actors?
+@MainActor ensures code runs on the main thread. When combined with other global actors, it guarantees thread-safe interactions between different contexts.
+
+actor BackgroundActor {
+    func performTask() {
+        print("Background actor task")
+    }
+}
+
+@MainActor
+func updateUI() {
+    print("Updating UI on main thread")
+}
+
+Task {
+    let backgroundActor = BackgroundActor()
+    await backgroundActor.performTask()
+    await updateUI()
+}
+
+58. How does Swift concurrency ensure thread safety with actors?
+Actors serialize access to their mutable state, ensuring thread safety. Only one task can access an actor’s mutable properties at a time.
+
+actor Counter {
+    private var count = 0
+
+    func increment() {
+        count += 1
+    }
+
+    func getCount() -> Int {
+        count
+    }
+}
+
+Task {
+    let counter = Counter()
+    await counter.increment()
+    print(await counter.getCount()) // Outputs: 1
+}
+
+59. What are some best practices for Swift Concurrency?
+	1.	Use async/await instead of completion handlers where possible.
+	2.	Always check for task cancellation using Task.isCancelled or Task.checkCancellation().
+	3.	Prefer TaskGroup for managing multiple concurrent tasks.
+	4.	Use @MainActor for UI updates or main-thread tasks.
+	5.	Avoid using Detached tasks unless absolutely necessary.
+	6.	Use withCheckedContinuation for bridging callback-based APIs to Swift concurrency safely.
