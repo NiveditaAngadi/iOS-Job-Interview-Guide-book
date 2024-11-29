@@ -224,3 +224,47 @@ you can cancel all of the operation objects in a queue by calling the cancelAllO
 Yes. You can suspend(temporary halt) to the execution of operations, you can suspend the corresponding operation queue using the setSuspended: method. 
 Suspending a queue does not cause already executing operations to pause in the middle of their tasks. It simply prevents new operations from being scheduled for execution.
 You might suspend a queue in response to a user request to pause any ongoing work, because the expectation is that the user might eventually want to resume that work.
+
+16. How Operation/queue is differences from GCD?
+	•	OperationQueue supports dependencies between tasks.
+	•	Operation can be paused, resumed, or canceled.
+	•	GCD is lower-level, while Operation provides an object-oriented approach to concurrency.
+
+17. How do you create asynchronous operation?
+class AsyncOperation: Operation {
+    private var _isExecuting = false
+    private var _isFinished = false
+
+    override var isAsynchronous: Bool { true }
+    override var isExecuting: Bool { _isExecuting }
+    override var isFinished: Bool { _isFinished }
+
+    override func start() {
+        if isCancelled {
+            finish()
+            return
+        }
+        _isExecuting = true
+        executeTask()
+    }
+
+    private func executeTask() {
+        DispatchQueue.global().async {
+            print("Async task started")
+            sleep(2)
+            print("Async task completed")
+            self.finish()
+        }
+    }
+
+    private func finish() {
+        _isExecuting = false
+        _isFinished = true
+    }
+}
+
+let asyncOp = AsyncOperation()
+let queue = OperationQueue()
+queue.addOperation(asyncOp)
+
+
