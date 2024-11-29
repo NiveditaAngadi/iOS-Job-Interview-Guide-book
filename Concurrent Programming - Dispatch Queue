@@ -18,19 +18,19 @@ GCD provides some dispatch queues automatically and some are developer needs to 
   c. Main Dispatch Queue 
 
 3. What is serial disptch queue?
-Serial queues (also known as private dispatch queues) execute one task at a time in the order in which they are added to the queue. 
+Serial queues (also known as "private dispatch queues") execute one task at a time in the order in which they are added to the queue. 
 The currently executing task runs on a distinct thread that is managed by the dispatch queue. Serial queues are often used to synchronize
 access to a specific resource. 
 
 4. What is concurrent dispatch queue?
-Concurrent queues (also knowns as global dispatch queues) execute one or more tasks concurrently, but tasks are still started in the order in which 
-they are added to the queue. 
+Concurrent queues (also knowns as "global dispatch queues") execute one or more tasks concurrently, 
+but tasks are still started in the order in which they are added to the queue. 
 The currently executing tasks run on distinct thereads are managed by the disptach queue. 
 You can create concurrent disptch queues by specifying DISPATCH_QUEUE_CONCURRENT as the queue type. 
 There are four predfined global concurrent queues for your application to use.
 
 5. What is main dispatch queue?
-The main dispatch queue is a globally available serial queue that executes tasks on the application's main thread. 
+The main dispatch queue is a "globally available serial queue" that executes tasks on the "application's main thread". 
 The queue works with the application's run loop to interleave the execution of queued tasks with execution of other event sources attached to the 
 run loop. 
 Becuase it runs on your application's main thread, the main queue is often used as a key synchronization point for an application. 
@@ -38,8 +38,8 @@ Becuase it runs on your application's main thread, the main queue is often used 
 6. What are the advantages of using dispatch queue as compare to thread?
 a. The advantages of dispatch queues are they are simpler to use and much more efficient at executing those tasks than the corresponding 
 threaded code. 
-With the threads you have to write code both for the work you want to perform and for the creation and creation and management of the threads 
-themselves.
+With the threads you have to write code both for the work you want to perform and for the creation and configure and 
+management, schedule of the threads themselves.
 Dispatch queues let you focus on the work you actually want to perform without having to worry about the thread creation and managment. 
 The thread creation and management responsibilities taken by the system efficiently based on the availability of resources. 
 
@@ -48,28 +48,27 @@ the contested and uncontested cases, where as a dispatch queue works primarily i
 kernel when absolutely necessary. 
 
 7. What are the key points to remember about dispatch queues?
- a. Dispatch queue execute their tasks concurrently with respect to other dispatch queues. The serialization of tasks limited to the tasks in a single 
-dispatch queue.
+ a. Dispatch queue execute their tasks concurrently with respect to other dispatch queues. The serialization of tasks limited to the tasks in a single dispatch queue.
  b. The system determines the total number of tasks executing at any one time. 
- c. The suystem takes queue priority levels into account when chosing which new task to start. 
+ c. The system takes queue priority levels into account when chosing which new task to start. 
  d. Tasks in a queue must be ready to execute at the time they are added to the queue. 
- e. Private dispatch queues are refrence counted. In addition to the queue retaining in your code,  be aware that dispatch sources can also be 
-attached to a queue and also increment its retain count. 
+ e. Private dispatch queues are refrence counted. In addition to the queue retaining in your code, 
+ be aware that dispatch sources can also be attached to a queue and also increment its retain count. 
 Thus, you must make sure that all dispatch sources are canceled and all retain calls are balanced with an appropriate release call.
 
 8. What are queue-related technologies provided by GCD?
   a. Dispatch groups -> Way to monitor a set of block objects for completion. 
   b. Disptach semaphore -> Simillar to the semaphore but is generally more efficient. 
-  c. Dispatch sources -> A dispatch source generates notifications in response to specific types of system events. You can use dispatch sources
-to monitor events such as process notifications, signals, and descriptor events among others. 
+  c. Dispatch sources -> A dispatch source generates notifications in response to specific types of system events. 
+You can use dispatch sources to monitor events such as process notifications, signals, and descriptor events among others. 
 
 9. How do you create and manage dispatch queues?
 Dispatch queues can execute tasks either serially or concurrently. 
 A concurrent dispatch queue is useful when you have multiple tasks that can run in parallel. 
 A concurrent queue is still a queue in that it dequeues tasks in a first-in first-out order. 
 
-The system provides each application with four concurrent dispatch queues. These queues are global to the application and are differentiated 
-only by their priority level.
+The system provides each application with four concurrent dispatch queues. 
+These queues are global to the application and are differentiated only by their priority level.
 Since they are global, you do not create them explicitly. 
 
 let dispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
@@ -96,7 +95,7 @@ In addition to any custom queues you create, the system automatically creates a 
 
 11. What is clean up function for a queue?
 After you create a serial dispatch queue, you can attach a finalizer function to perform any custom clean up when the queue is deallocated.
- Dispatch queues are reference counted objects and you can use the dispatch_set_finalizer_f function 
+Dispatch queues are reference counted objects and you can use the dispatch_set_finalizer_f function 
 to specify a function to be executed when the reference count of your queue reaches zero.
 
 12. How do you add(dispatch) tasks asynchronously to the queue?
@@ -152,7 +151,8 @@ you may want to use a dispatch semaphore to regulate the number of tasks simulta
  A dispatch semaphore works like a regular semaphore with one exception. 
 When resources are available, it takes less time to acquire a dispatch semaphore than it does to acquire a traditional system semaphore. 
 This is because Grand Central Dispatch does not call down into the kernel for this particular case. 
-The only time it calls down into the kernel is when the resource is not available and the system needs to park your thread until the semaphore is signaled.
+The only time it calls down into the kernel is when the resource is not available 
+and the system needs to park your thread until the semaphore is signaled.
 
 18. Semantics for using a dispatch semaphore. 
   a. Create the semaphore - dispatch_semaphore_create function.
@@ -163,11 +163,12 @@ The only time it calls down into the kernel is when the resource is not availabl
 19. Explain dispatch group function.
 Dispatch groups are a way to block a thread until one or more tasks finish executing. 
 You can use this behavior in places where you cannot make progress until all of the specified tasks are complete. 
-For example, after dispatching several tasks to compute some data, you might use a group to wait on those tasks and then process the results when they are done.
- Add the corresponding tasks to a dispatch group and wait on the entire group.
+For example, after dispatching several tasks to compute some data, 
+you might use a group to wait on those tasks and then process the results when they are done.
+Add the corresponding tasks to a dispatch group and wait on the entire group.
 
 func say(_ text: String) {
- print("text"
+ print("text")
 }
 
 let group = DispatchGroup()
@@ -205,8 +206,8 @@ If you need to synchronize parts of your code, use a serial dispatch queue inste
 
 22. What is dispatch sources?
 A dispatch source is a fundamental data type that coordinates the processing of specific low-level system events. 
-
-
+Timers 
+System notifications.
 
 
 
