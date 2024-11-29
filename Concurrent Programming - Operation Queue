@@ -11,7 +11,7 @@ They are Objective-C based, operations are most commonly used in Cocoa - based a
 
 Operation - an abstract class that represents the code and data associated with a single task. 
 Since, its an abstract class, you do not use it directly but instead subclass or use one of the system-defined subclasses to perform the actual task.
-Despite being abstract, the base implementation of Operation does inclue significant logic to coordinate the safe execution of your task.
+Despite being abstract, the base implementation of Operation does include significant logic to coordinate the safe execution of your task.
 The presence of this built-in logic allows you to focus on the actual implementation of your task,
 rather than on the glue code needed to ensure it works correctly with other system objects.
 
@@ -20,7 +20,8 @@ You typically execute operations by adding them to an operation queue.
 An operation queue executes its operations either directly, by running them on secondary threads, 
 or indirectly using the libdispatch library (also known as Grand Central Dispatch). 
 
-If can execute the operation by yourself instead of adding into operation queue. But you have extra responsibility of starting, checking readiness of the task before starting the task. 
+If can execute the operation by yourself instead of adding into operation queue. 
+But you have extra responsibility of starting, checking readiness of the task before starting the task. 
 
 2. What are the operation classes of the Foundation framework?
 NSInvocationOperation 
@@ -29,8 +30,8 @@ NSOperation
 
 3. Explain NSInvocationOperation.
 A class you use as-is to create an operation object based on an object and selector from your application. 
-You can use this class in cases where you have an existing method that already performs the needed task. It does not require subclassing, you can 
-also use this class to create operation objects in a more dynamic fashion.
+You can use this class in cases where you have an existing method that already performs the needed task. It does not require subclassing,
+you can also use this class to create operation objects in a more dynamic fashion.
 
 This class executes the non-concurrent operation. 
 
@@ -56,12 +57,12 @@ Returns an NSInvocationOperation object initialized with the specified invocatio
 4. Explain NSBlockOperation.
 A class you use as-is to execute one or more block objects concurrently. Because it can execute more than one block, a block operation object 
 operates using a group semantic, only when all of the associated blocks have finished executing is the operation itself considered as finished. 
-Acts as wrapper for one or more block objects. This class provides an object-oriented wrapper for applications that are already using operation queues and do not
-want to create dispatch queues as well. 
+Acts as wrapper for one or more block objects. 
+This class provides an object-oriented wrapper for applications that are already using operation queues and do not want to create dispatch queues as well. 
 You can also use block operations to take advantage of operation dependencies, KVO notifications, and other features that might not be available with dispatch queues.
 When you create a block operation, you typically add at least one block at initialization time; you can add more blocks as needed later. 
- When it comes time to execute an NSBlockOperation object, the object submits all of its blocks to the default-priority, concurrent dispatch queue. 
-The object then waits until all of the blocks finish executing. When the last block finishes executing, the operation object marks itself as finished.
+When it comes time to execute an NSBlockOperation object, the object submits all of its blocks to the default-priority, concurrent dispatch queue. 
+The object than waits until all of the blocks finish executing. When the last block finishes executing, the operation object marks itself as finished.
 
 let queue = OperationQueue()
 queue.maxConcurrentOperationCount = 1
@@ -103,8 +104,8 @@ By default, this method returns NO, which means the operation runs synchronously
 There are two ways. 
 1. Manual way -> If you want to implement a concurrent operation—that is, one that runs asynchronously with respect to the calling thread—you must write additional code to start 
 the operation asynchronously. 
-For example, you might spawn a separate thread, call an asynchronous system function, or by submitting a blcok to a dispatch queue for execution or do anything else to ensure that the start method starts the task and returns immediately and, 
-in all likelihood, before the task is finished.
+For example, you might spawn a separate thread, call an asynchronous system function, or by submitting a block to a dispatch queue for execution or
+do anything else to ensure that the start method starts the task and returns immediately and, in all likelihood, before the task is finished.
 2. If you add operation object to the operation queue, you do not need to implement concurrent operations. 
  When you submit a nonconcurrent operation to an operation queue, the queue itself creates a thread on which to run your operation. Queue ignores
 the value of the isAsynchronous property and always calls the start() method from a seperate thread. 
@@ -118,7 +119,7 @@ Every operation object should implement at least following methods.
 
 Additional methods such as, 
 1. Custom methods that you plan to call from the implementation of your main method. 
-2. Accessor methods for setting data values and accessing the results of  the operation. 
+2. Accessor methods for setting data values and accessing the results of the operation. 
 3. Methods of NSCoding protocol for archieve and unarchieve the operation object. 
 
 An operation begins executing, it continues performing its task until it is finished or until your code explicitly cancels the operation. 
@@ -135,8 +136,8 @@ Where should you call the cancellation check in the code?
 3. At any points in your code where it would be relatively easy to abort the operation. 
 
 10. What are the methods to support concurrent operation. 
-1. Start - is required method, all concurrent operations must override this method and replace the default behaviour with their own custom implementation. To execute an operation manually, you call its start method.
-Its where you setup the thread or other execution environment in which to execute your task. 
+1. Start - is required method, all concurrent operations must override this method and replace the default behaviour with their own custom implementation. 
+To execute an operation manually, you call its start method. Its where you setup the thread or other execution environment in which to execute your task. 
 2. main - optional method - this method typically used to implement the task associated with the operation object. 
 3. isExecuting and isFinished - required method - Concurrent operations are responsible for setting up their execution environment and reporting the status of that environment to outside clients. 
 Therefore, a concurrent operation must maintain some state information to know when it is executing its task and when it has finished that task. It must then report that state using these methods.
@@ -155,7 +156,8 @@ completionBlock
 12. What are the customization you can carry on the operation object?
 The configuration of operation objects occurs after you have created them but before you add them to a queue.
 a. Configuring the interoperation dependencies 
--> Dependencies are a way for you to serialize the execution of distinct operation objects. An operation that is dependent on other operations cannot begin executing until all of the operations on which it depends have finished executing. 
+-> Dependencies are a way for you to serialize the execution of distinct operation objects. 
+An operation that is dependent on other operations cannot begin executing until all of the operations on which it depends have finished executing. 
 Thus, you can use dependencies to create simple one-to-one dependencies between two operation objects or to build complex object dependency graphs.
 To establish dependencies between two operation objects, you use the addDependency: method of NSOperation. 
 This method creates a one-way dependency from the current operation object to the target operation you specify as a parameter. 
@@ -177,8 +179,8 @@ If your application has multiple operation queues, each prioritizes its own oper
 Thus, it is still possible for low-priority operations to execute before high-priority operations in a different queue.
 
 Priority levels are not a substitute for dependencies. Priorities determine the order in which an operation queue starts executing 
-only those operations that are currently ready. For example, 
-if a queue contains both a high-priority and low-priority operation and both operations are ready, 
+only those operations that are currently ready. 
+For example, if a queue contains both a high-priority and low-priority operation and both operations are ready, 
 the queue executes the high-priority operation first. However, if the high-priority operation is not ready but the low-priority operation is, 
 the queue executes the low-priority operation first. 
 If you want to prevent one operation from starting until another operation has finished, 
@@ -199,7 +201,7 @@ queue.addOperationWithBlock: {
 }
 
 2. Executing operations manually.
- If you choose to execute operations manually, however, there are some precautions you should take in your code. 
+If you choose to execute operations manually, however, there are some precautions you should take in your code. 
 In particular, the operation must be ready to run and you must always start it using its start method.
 An operation is not considered able to run until its isReady method returns YES. 
 When executing an operation manually, you should always use the start method to begin execution. 
@@ -209,7 +211,8 @@ This method also correctly avoids executing your operation if it has already bee
 
 14. How do you force a operation queue to run single operation. 
 Although the NSOperationQueue class is designed for the concurrent execution of operations, it is possible to force a single queue to run only one operation at a time.
-The setMaxConcurrentOperationCount: method lets you configure the maximum number of concurrent operations for an operation queue object. Passing a value of 1 to this method causes the queue to execute only one operation at a time.
+The setMaxConcurrentOperationCount: method lets you configure the maximum number of concurrent operations for an operation queue object. 
+Passing a value of 1 to this method causes the queue to execute only one operation at a time.
 
 15. Can operations be cancelled once added to the opearation queue. 
 Once added to an operation queue, an operation object is effectively owned by the queue and cannot be removed. The only way to dequeue an operation is to cancel it. 
