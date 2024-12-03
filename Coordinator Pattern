@@ -1,0 +1,51 @@
+https://khanlou.com/2015/01/the-coordinator/
+https://khanlou.com/tag/advanced-coordinators/
+
+
+1. Why coordinator pattern?
+View controller becomes massive when they entangled with flow logic, view logic, and business logic. 
+
+If flow logic is encoded into the view controller itself, the view controller can't be reused for its stunningly good looks without dragging all that flow code with it. 
+Viewcotroller is a view object, and handling user flow is out of scope. 
+
+2. What is coordinator?
+It is an object, who takes responsibility of flow logic in the app - that directs whole-app.
+Its organizational pattern. 
+
+This pattern also called "Application Controller Pattern".
+
+Its a centralised point for handling screen navigation and the flow of an application.
+
+To some degree the various ModelViewController input controllers can make some of these decisions, but as an application gets more complex this can lead 
+to duplicated code as several controllers for different screens need to know what to do in a certain situation. 
+
+You can remove this duplication by placing all the flow logic in an Application Controller. 
+Input controllers then ask the Application Controller for the appropriate commands for execution against a model and the correct view to use depending on the application context.
+
+In iOS, App delegate holds on to the "AppCoordinator". 
+AppCoordinator -> solves the problem of overstuffed app delegate. 
+The appThe app delegate can hold on to the app coordinator and start it up. 
+The app coordinator will set up the primary view controller for the app.
+
+Every coordinator holds an array of its child coordinators. 
+Especially if you have more than one, as in a tab bar app, each navigation controller gets its own coordinator, for directing its behavior and flow.
+Each coordinator is spawned by its parent coordinator. As always, use this pattern early in the development process, so they’re useful even in single-step tasks, such as authentication.
+
+None of the view controllers in the process need to know about any of the view controllers. Each view controller is an island. 
+
+3. Benefits of coordinator pattern.
+View controllers can now focus on their goal of binding model to a view. 
+View controllers are now reusable.
+A/B testing is as simple as creating a different coordinator object and using that to start the process. 
+Coordinators are objects fully in your control. 
+Coordinator seperate display-binding from side effects. 
+Every task and sub-task in your app now has a dedicated way of being encapsulated.
+They’ll help make your app and your code more manageable. View controllers will be more reusable, and growing your app will be easier than ever.
+No third party dependencies. 
+
+
+4. Why you use array for child coordinators?
+We use array of child coordinators to prevent the child coordinators from getting deallocated.
+
+
+
