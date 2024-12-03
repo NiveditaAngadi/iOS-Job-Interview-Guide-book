@@ -41,3 +41,9 @@ the code testable and maintainable by eliminating tightly coupled relationships 
 DI container is another important Dependency Injection concept. A DI container is responsible for registering and resolving all dependencies in your project. 
 Depending on the DI Container’s complexity, it can take care of the dependencies’ life cycles and automatically inject them whenever necessary on its own.
 
+6. What is Swinject?
+Swinject is lightweight dependency injection framework for Swift. 
+Dependency injection (DI) is a software design pattern that implements Inversion of Control (IoC) for resolving dependencies. 
+In the pattern, Swinject helps your app split into loosely-coupled components, which can be developed, tested and maintained more easily. 
+Swinject is powered by the Swift generic type system and first class functions to define dependencies of your app simply and fluently.
+
