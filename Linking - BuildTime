@@ -1,1 +1,94 @@
+1. What is linking?
+You've written a code, but you also use the code someone else wrote in the form of library or a framework. In order for your code to use thos libraries, a linker is needed. 
+
+2. What are the types of linking?
+1. Static linking
+2. Dynamic linking 
+
+3. What is Static Linking?
+Linking happens when you build your app. This can impact how long it takes for your app to build and how big your app ends up being. 
+
+
+4. What is Dynamic linking?
+Linking happens when your app is launched. This can impact how long your customers have to wait for your app to launch. 
+
+5. What is Apple's static linker 
+ld64. Twice as fast as for many projects. Links parallel - That includes copying content from the input to the output file, building the different parts of LINKEDIT in parallel, and changing the UUID computation and codesigning hashes to be done in parallel
+
+
+6. Explain static linking. 
+To understand static linking, let's go way back to when it all started. 
+In the beginning, programs were simple and there was just one source file. Building was easy. You just ran the compiler on your one source file and it produced the executable program. 
+But having all your source code in one file did not scale. How do you build with multiple source files? And this is not just because you don't want to edit a large text file.
+The real savings is not re-compiling every function, every time you build. 
+What they did was to split the compiler into two parts. 
+ - The first part compiles source code to a new intermediate "relocatable object" file. 
+ - The second part reads the relocatable .o file and produces an executable program.
+  We now call the second part 'ld', the static linker. 
+
+As software evolved, soon people were passing around .o files.
+But that got cumbersome. Someone thought, "Wouldn't it be great if we could package up a set of .o files into a 'library'?" 
+At the time the standard way to bundle files together was with the archiving tool 'ar'. 
+It was used for backups and distributions.
+So the workflow became this. You could 'ar' up multiple .o files into an archive, and the linker was enhanced to know how to read .o files directly out of an archive file. 
+This was a great improvement for sharing common code. At the time it was just called a library or an archive. Today we call it as "Static Library"
+But now the final program was getting big because thousands of functions from these libaries were copied into it, even if only a few of those functions were used. 
+
+7. What is optimization added to linker to avoid the copying all .o files in to app?
+So a clever optimization was added. Instead of having the linker use all the .o files from the static library, 
+the linker would only pull .o files from a static library if doing so would resolve some undefined symbol. 
+That meant someone could build a big libc.a static library, which contained all the C standard library functions. 
+Every program could link with the one libc.a, but each program only got the parts of libc that the program actually needed. 
+
+8. What are the impact of overusing static libraries?
+a. Impact on the link time. 
+The first topic is if you are actively working on a source file that builds into a static library, you've introduced a slowdown to your build time. 
+Because after the file is compiled, the entire static library has to be rebuilt, including its table of contents. This is just a lot of extra I/O.
+Static libraries make the most sense for stable code. 
+That is, code not being actively changed. 
+Slower link time, that is because to make builds reproducible and follow traditional static library semantics, the linker has to process static libraries in a fixed, serial order.
+b. It should be clear that as more and more libraries are made available, the end program may grow in size. 
+That means the static link time to build that program will also increase over time.
+
+9. What is ld?
+The output library is now an executable library. 
+ld -> dynamic libraries. We call dynamic libraries "dylibs"
+On other platforms they are known as DSOs or DLLs.
+
+10. What is dynamic linking?
+Instead of copying code out of the library into the final program, 
+the linker just records a kind of promise. That is, it records the symbol name used from the dynamic library and what the library's path will be at runtime. 
+
+11. What are the advantages of dynamic linking?
+It means your program file size is under your control. It just contains your code, and a list of dynamic libraries it needs at runtime. You no longer get copies of library code in your program. 
+Your program's static link time is now proportional to the size of your code, and independent of the number of dylibs you link with. 
+Also, the Virtual Memory system can now shine. 
+When it sees the same dynamic library used in multiple processes, the Virtual Memory system will re-use the same physical pages of RAM for that dylib in all processes that use 
+that dylib. 
+
+12. What are the cause of using dynamic library?
+First, a benefit of using dynamic libraries is that we have sped up build time. But the cost is that launching your app is now slower.
+This is because launching is no longer just loading one program file. Now all the dylibs also need to be loaded and connected together.  In other words, you just deferred some of the linking costs from build time to launch time.
+Second, a dynamic library based program will have more dirty pages.  In the static library case, the linker would co-locate all globals from all static libraries into the same DATA pages in the main executable. But with dylibs, each library has its DATA page.
+Lastly, another cost of dynamic linking is that it introduces the need for something new: a dynamic linker! Remember that promise that was recorded in the executable at build time? Now we need something at runtime that will fulfill that promise to load our library. That's what dyld, the dynamic linker, is for. 
+
+13. How dynamic library works at runtime?
+ Let's dive into how dynamic linking works at runtime. 
+An executable binary is divided up into segments, usually at least TEXT, DATA, and LINKEDIT. 
+Segments are always a multiple of the page size for the OS. 
+Each segment has a different permission. 
+For example, the TEXT segment has "execute" permissions. 
+That means the CPU may treat the bytes on the page as machine code instructions. 
+At runtime, dyld has to mmap() the executables into memory with each segments' permissions. B
+ecause the segments are page sized and page aligned, that makes it straightforward for the virtual memory system 
+to just set up the program or dylib file as backing store for a VM range. 
+That means nothing is loaded into RAM until there is some memory access on those pages, 
+which triggers a page fault, which causes the VM system to read the proper subrange of the file and fill in the needed RAM page with its content. 
+But just mapping is not enough. Somehow the program needs to be "wired up" or bound to the dylib. For that we have a concept called "fix ups".
+
+14. How dyld works?
+Dyld starts with the main executable– say your app. Parses that mach-o to find the dependent dylibs, that is, what promised dynamic libraries it needs.
+It finds those dylibs and mmap()s them. Then for each of those, it recurses and parses their mach-o structures, loading any additional dylibs as needed. Once everything is loaded, 
+dyld looks up all the bind symbols needed and uses those addresses when doing fixups. Lastly, once all the fixups are done, dyld runs initializers, bottom up.
+
 
