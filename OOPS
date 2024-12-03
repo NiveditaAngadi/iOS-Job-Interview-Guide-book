@@ -43,6 +43,10 @@ They are only able to call a list of public functions or methods.
 
 4. What is Abstraction?
 Objects only reveal internal mechanisms that are relevant for the use of other objects, hiding any unnecessary implementation code. 
+Abstraction seperates ideas from specific details. 
+
+When you extract the functionality into a function, 
+the details are abstracted away, and the code that uses the abstraction can express the idea of what's happening without repeating the details.
 
 5. What is inheritance? 
 Classes can reuse code and properties from other classes 
@@ -50,5 +54,18 @@ Classes can reuse code and properties from other classes
 6. What is Polymorphism?
 Polymorphism allows one piece of code to have many behaviors. 
 
+Polymorphism comes different forms.
+1. Function overloading -> Where the same function call can mean different things depending on the argument type. 
+Overloading is called "ad-hoc polymorphism" because it isn't really a general solution.
+
+2. Subtype polymorphism -  where code operating on a supertype can have different behavior based on the specific subtype the code is using at runtime.
+One way to represent subtype relationships is with a class hierarchy. 
+
+
+3. Parametric polymorphism - Which is achieved using generics. 
+Generic code uses type parameters to allow writing one piece of code that works with different types,
+and concrete types themselves are used as arguments.
+
+We want a language constructs that was designed to represent capabilities of types without the details of how the capability works. 
 
 
