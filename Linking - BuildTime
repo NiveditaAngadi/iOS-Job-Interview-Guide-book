@@ -8,13 +8,11 @@ You've written a code, but you also use the code someone else wrote in the form 
 3. What is Static Linking?
 Linking happens when you build your app. This can impact how long it takes for your app to build and how big your app ends up being. 
 
-
 4. What is Dynamic linking?
 Linking happens when your app is launched. This can impact how long your customers have to wait for your app to launch. 
 
 5. What is Apple's static linker 
 ld64. Twice as fast as for many projects. Links parallel - That includes copying content from the input to the output file, building the different parts of LINKEDIT in parallel, and changing the UUID computation and codesigning hashes to be done in parallel
-
 
 6. Explain static linking. 
 To understand static linking, let's go way back to when it all started. 
