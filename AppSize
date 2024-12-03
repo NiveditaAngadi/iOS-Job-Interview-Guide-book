@@ -1,0 +1,88 @@
+1. Why App Size is important?
+Users want to download the app in Cellular Connection (you cannot be sure all our users will be in WiFi while downloading/updating the app)
+Keeping the app size slimmer increases user retention.
+A lengthy ‘time to first play’ could turn the user on edge & make them sigh before even they experience your mobile app.
+And a user’s device may have an extremely small amount of disk space.
+When you can save user’s space and environment.
+
+2. What is the AppStore limit for apps?
+1. From iOS 13 there is warning alert for downloading app more than 200 MB in cellular connection, 
+that can be also customised to always allow or always warn when downloading in cellular connection.
+2. For devices running lower than iOS 12, it is mandatory for the user to be connected with WiFi to download apps more than 200 MB
+3.The maximum size an iOS app can be submitted in AppStore is 4 GB
+4. Each Mach-O executable file (for example, app_name.app/app_name) must not exceed these limits:
+For apps whose MinimumOSVersion is less than 7.0: maximum of 80 MB for the total of all __TEXT sections in the binary.
+For apps whose MinimumOSVersion is 7.x through 8.x: maximum of 60 MB per slice for the __TEXT section of each architecture slice in the binary.
+For apps whose MinimumOSVersion is 9.0 or greater: maximum of 500 MB for the total of all __TEXT sections in the binary.
+
+3. How to reduce app size?
+a. Clean up unwanted/leftover app resources
+As the features within an app grow, there will be an increase in resources, class files. But we never revisit to clear the unused assets. The manual way for this:
+Using Xcode, archive the app and in the organiser window, open the archive in finder
+Open the folder and right-click on the app_name and select “Show Package Contents”
+The package contains all your resources like images, xib’s, storyboard’s, fonts, etc.,
+Find out all the resources that you do not require and delete them.
+LSUnusedResources is a cool open-source tool that helps us to do this task easily.
+
+b. App thinning 
+There are three main aspects of App Thinning: App Slicing, Bitcode, and On-Demand Resources.
+
+1. App slicing 
+Before iOS 9, Apple used a universal binary that means same binary will be downloaded in all the devices. 
+This unnecessarily included the assets needed for a particular device model.
+So to overcome this apple came with a technique called App Slicing, 
+we can upload a single ipa to the apps store connect and apple will slice it to different IPA's according to the executable architecture 
+and resources that are needed for the target device.
+This process is completely done by the Apps Store. We can use TestFlight and Xcode for testing this.
+
+2. Bitcode 
+Bitcode is an intermediate representation of a compiled program. Apps you upload to iTunes Connect that contain bitcode will be compiled and linked on the App Store.
+What's the need to enable bitcode in the app?
+Apple is continuously enhancing the optimization performed by the Clang compiler to further improve the performance of mobile applications and reduce its size.
+Using the embedded bitcode, Apple itself can recompile applications using the latest, improved version of the compiler. This not only frees app developers from the burden of continuously having to update their development environment but also recompile & re-upload their applications to benefit from the latest improvements.
+The embedded bitcode enables Apple to recompile existing applications and make them compatible with the chipsets of new devices.
+
+3. On-demand resources
+ODR is a technique to reduce the initial download size of applications which rely on large assets for use. 
+This is especially useful to games developers with large assets only required during certain stages of the game.
+
+Benefits of On-Demand Resources:
+Smaller app size
+Lazy loading of app resources
+Remote storage of rarely used resources
+Remote storage of in-app purchase resources
+
+4.  Keep an eye on the size of the app updates?
+Every time when we push an app update to the app store, the user will not be downloading the entire app again & again. Instead, Apple will create an update package and send it to the user via the app store.
+So, we need to make sure we did not push any unwanted changes in storyboards and xibs and frameworks etc.
+
+5. LLVM optimization levels
+LLVM provides 5 optimization levels (Apple Clang Code Generation) they are:
+None [-O0]
+No attempt to optimize the code.
+The goal is to reduce the cost of compilation
+Makes debugging produce the expected results and statements are independent
+Used during development when you are focused on debugging and need a fast compile time. Not for shipping your executable.
+Fast [-O, O1]
+Does simple optimizations to Increase code performance while minimizing the impact to compile time.
+Faster [-O2]
+Increases both compilation time and the performance of generated code.
+Fastest [-O3]
+This option can increase the size of generated code as the compiler performs aggressive inlining of functions. (This option is generally not recommended.)
+Fastest, Smallest [-Os]
+Performs all optimizations that do not typically increase code size.
+Suitable for shipping code because it gives your executable a smaller memory footprint.
+Fastest, Aggressive optimization [-Ofast]
+This setting enables Fastest but also enables aggressive optimizations that may break strict standards compliance but should work well on well-behaved code.
+
+When creating a new project in Xcode it sets up 2 configurations with following default values for the LLVM optimization levels:
+Debug:
+-O0 (none) - the fastest compile-time, the easiest debugging
+Release:
+-Os (fastest, smallest) - the best combination of small binary size and fast runtime execution
+Swift provides three different optimization levels (Swift Compiler Code Generation):
+-Onone: Used while Development. Performs minimal optimizations and preserves all debug info.
+-O: This is meant for most production code. The compiler performs aggressive optimizations that can drastically change the type and amount of emitted code. Debug information will be emitted but will be lossy.
+-Osize: This is a special optimization mode where the compiler prioritizes code size over performance.
+
+Make sure you understand each of this setting and configure your project according to the requirement. The recommend for release version is Fastest, Smallest [-Os] and -Osize
