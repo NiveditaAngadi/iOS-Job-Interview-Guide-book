@@ -47,4 +47,8 @@ Objects only reveal internal mechanisms that are relevant for the use of other o
 5. What is inheritance? 
 Classes can reuse code and properties from other classes 
 
+6. What is Polymorphism?
+Polymorphism allows one piece of code to have many behaviors. 
+
+
 
