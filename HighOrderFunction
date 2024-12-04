@@ -1,4 +1,51 @@
-1. Reduce
+
+Reference:
+https://developer.apple.com/documentation/swift/array/reduce(_:_:)
+
+
+High-order functions (HOFs) are a powerful concept in Swift and are widely used to write concise and expressive code. 
+
+1. What are High-Order functions?
+A higher-order function is a function does one or both of the following.
+a. Takes one or more functions as arguments. 
+b. Return a function as its result.
+
+2. Some of the High-order functions are - map, filter, reduce, compactMap, flatMap etc. 
+
+3. Map
+Purpose: Transforms each element in a collection and returns a new array containing the results. 
+How it works: You pass a closure defining the logic
+
+let numbers = [1, 2, 3, 4, 5]
+let doubledNumbers = numbers.map {$0 * 2}
+print(doubledNumbers)
+
+let names = ["Alice", "Bob", "Charlie"]
+let upperCasedNames = names.map { $0.uppercased() }
+print(upperCasedNames)
+
+4. filter 
+Purpose: Filters elements of a collection based on a condition and returns an array of elements that satisfy the condition. 
+How it works: You pass a closure that evaluates each element to true or false. 
+
+let numbers = [1, 2, 3, 4, 5, 6]
+
+// Keep only even numbers
+let evenNumbers = numbers.filter { $0 % 2 == 0 }
+
+print(evenNumbers) // Output: [2, 4, 6]
+
+let words = ["Swift", "Programming", "Code", "Fun"]
+
+// Keep words longer than 4 characters
+let longWords = words.filter { $0.count > 4 }
+
+print(longWords) // Output: ["Swift", "Programming"]
+
+5. Reduce
+Purpose: Combines all elements of a collection into a single value using a closure. 
+How it works: You specify an initial value and a closure to combine the current result with each element.
+
 Returns the result of combining the elements of the sequence using the given closure.
 
 reduce(_:_:)
@@ -22,5 +69,255 @@ let numberSum = numbers.reduce(0, { x, y in
 })
 // numberSum == 10
 
-Reference:
-https://developer.apple.com/documentation/swift/array/reduce(_:_:)
+let words = ["Hello", "World"]
+
+// Combine all words into a single string
+let sentence = words.reduce("") { $0 + $1 + " " }
+
+print(sentence) // Output: "Hello World "
+
+6. compactMap 
+Purpose: Similar to map, but removes nil values from the resulting collection
+How it works: You pass a closure that might return nil 
+
+let strings = ["1", "2", "three", "4", "five"]
+
+// Convert valid numbers and ignore invalid entries
+let numbers = strings.compactMap { Int($0) }
+
+print(numbers) // Output: [1, 2, 4]
+
+7. flatMap
+Purpose: Transforms each element and flattens the resulting arrays into a single array.
+How it works: You pass a closure that transforms each element into an array 
+
+let nestedArrays = [[1, 2, 3], [4, 5], [6, 7, 8]]
+
+// Flatten into a single array
+let flatArray = nestedArrays.flatMap { $0 }
+
+print(flatArray) // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+
+8. sort and sorted
+•	Purpose: Sorts the elements of a collection based on a closure.
+•   How it works: sorted returns a new sorted array, while sort modifies the array in place.
+
+var numbers = [5, 2, 8, 1, 9]
+
+// Ascending order
+let sortedNumbers = numbers.sorted { $0 < $1 }
+
+print(sortedNumbers) // Output: [1, 2, 5, 8, 9]
+
+let names = ["Alice", "Bob", "Charlie", "Eve"]
+
+// Sort by string length
+let sortedNames = names.sorted { $0.count < $1.count }
+
+print(sortedNames) // Output: ["Bob", "Eve", "Alice", "Charlie"]
+
+9. forEach 
+	Purpose: Iterates over each element in a collection.
+	•	How it works: Similar to for-in, but doesn’t allow early exits (break).
+
+Example: Printing Each Element
+let numbers = [1, 2, 3, 4, 5]
+
+numbers.forEach { print($0) }
+// Output:
+// 1
+// 2
+// 3
+// 4
+// 5
+
+10. zip 
+	•	Purpose: Combines two sequences into pairs.
+	•	How it works: Creates tuples from corresponding elements of two collections.
+let names = ["Alice", "Bob", "Charlie"]
+let scores = [90, 85, 88]
+
+// Combine names and scores
+let paired = zip(names, scores)
+
+for (name, score) in paired {
+    print("\(name): \(score)")
+}
+// Output:
+// Alice: 90
+// Bob: 85
+// Charlie: 88
+
+11. Custom Higher-order functions
+func myFilter<T>(_ array: [T], condition: (T) -> Bool) -> [T] {
+    var result: [T] = []
+    for item in array {
+        if condition(item) {
+            result.append(item)
+        }
+    }
+    return result
+}
+
+let numbers = [1, 2, 3, 4, 5]
+let filteredNumbers = myFilter(numbers) { $0 > 3 }
+
+print(filteredNumbers) // Output: [4, 5]
+
+12. contains
+	•	Purpose: Checks whether a collection contains an element that satisfies a given condition.
+	•	How it works: You pass a closure to specify the condition.
+
+let numbers = [1, 3, 5, 7, 9]
+
+// Check if the array contains an even number
+let hasEven = numbers.contains { $0 % 2 == 0 }
+
+print(hasEven) // Output: false
+
+13. allSatisfy
+	•	Purpose: Checks if all elements in a collection satisfy a condition.
+	•	How it works: You pass a closure that returns true or false.
+let numbers = [2, 4, 6, 8]
+
+// Check if all numbers are greater than zero
+let allPositive = numbers.allSatisfy { $0 > 0 }
+
+print(allPositive) // Output: true
+
+14. first(where:)
+	•	Purpose: Returns the first element in a collection that matches a condition.
+	•	How it works: You pass a closure that defines the condition.
+
+let numbers = [1, 3, 5, 6, 7]
+
+// Find the first even number
+if let firstEven = numbers.first(where: { $0 % 2 == 0 }) {
+    print("First even number: \(firstEven)") // Output: First even number: 6
+}
+
+15. drop(while:)
+	•	Purpose: Skips elements in a collection while a condition is true and returns the remaining elements.
+	•	How it works: You pass a closure to specify the condition.
+let numbers = [1, 2, 3, 5, 7, 9]
+
+// Drop numbers while they are less than 5
+let result = numbers.drop(while: { $0 < 5 })
+
+print(result) // Output: [5, 7, 9]
+
+16. prefix(while:)
+	•	Purpose: Returns the prefix of a collection while a condition is true.
+	•	How it works: You pass a closure that defines the condition.
+
+let numbers = [1, 2, 3, 5, 7, 9]
+
+// Take numbers while they are less than 5
+let result = numbers.prefix(while: { $0 < 5 })
+
+print(result) // Output: [1, 2, 3]
+
+17.  partition(by:)
+
+	•	Purpose: Partitions the collection into two sections based on a condition.
+	•	How it works: Elements that match the condition are moved to the start of the collection.
+
+Example: Partition Even and Odd Numbers
+var numbers = [1, 2, 3, 4, 5, 6]
+
+// Partition the numbers into even and odd
+let pivot = numbers.partition(by: { $0 % 2 == 0 })
+
+let evens = numbers[..<pivot] // First partition
+let odds = numbers[pivot...]  // Second partition
+
+print(evens) // Output: [2, 4, 6]
+print(odds)  // Output: [1, 3, 5]
+
+18.  removeAll(where:)
+
+	•	Purpose: Removes all elements from a collection that satisfy a condition.
+	•	How it works: You pass a closure that defines the removal condition.
+Remove Negative Numbers
+var numbers = [1, -2, 3, -4, 5]
+
+// Remove all negative numbers
+numbers.removeAll { $0 < 0 }
+
+print(numbers) // Output: [1, 3, 5]
+
+19. reduce(into:_:)
+	•	Purpose: Combines all elements into a single result, while allowing the initial value to be modified directly (more efficient than reduce).
+	•	How it works: You pass an initial value and a closure to update it.
+
+let numbers = [1, 2, 3, 4, 5, 6]
+
+// Group numbers into even and odd
+let grouped = numbers.reduce(into: [String: [Int]]()) { result, number in
+    if number % 2 == 0 {
+        result["even", default: []].append(number)
+    } else {
+        result["odd", default: []].append(number)
+    }
+}
+
+print(grouped) // Output: ["even": [2, 4, 6], "odd": [1, 3, 5]]
+
+20. indices(where:) (Custom Function)
+	•	Purpose: Finds all indices of elements that satisfy a given condition. (Not built-in, but easily implemented.)
+	•	How it works: Iterate through the collection and return matching indices.
+
+extension Collection {
+    func indices(where predicate: (Element) -> Bool) -> [Index] {
+        var result: [Index] = []
+        for index in indices {
+            if predicate(self[index]) {
+                result.append(index)
+            }
+        }
+        return result
+    }
+}
+
+let numbers = [1, 2, 3, 4, 5, 6]
+
+// Find indices of even numbers
+let evenIndices = numbers.indices(where: { $0 % 2 == 0 })
+
+print(evenIndices) // Output: [1, 3, 5]
+
+21. chunked(by:) (Custom Function)
+	•	Purpose: Groups a collection into chunks based on a custom condition. (Not built-in, but easily implemented.)
+	•	How it works: Iterates through the collection and groups elements that match the condition.
+
+Chunk Consecutive Even Numbers
+extension Array {
+    func chunked(by condition: (Element, Element) -> Bool) -> [[Element]] {
+        guard !isEmpty else { return [] }
+        var result: [[Element]] = [[self[0]]]
+        for element in dropFirst() {
+            if let last = result.last?.last, condition(last, element) {
+                result[result.count - 1].append(element)
+            } else {
+                result.append([element])
+            }
+        }
+        return result
+    }
+}
+
+let numbers = [1, 2, 2, 3, 4, 4, 4, 5]
+
+// Chunk consecutive numbers
+let chunks = numbers.chunked(by: { $0 == $1 })
+
+print(chunks) // Output: [[1], [2, 2], [3], [4, 4, 4], [5]]
+
+22. Categories of HOF's.
+    •   Transformation: map, compactMap, flatMap
+	•	Filtering: filter, removeAll(where:)
+	•	Searching: contains, allSatisfy, first(where:)
+	•	Aggregation: reduce, reduce(into:)
+	•	Sorting and Partitioning: sorted(by:), partition(by:)
+	•	Custom Utility: indices(where:), chunked(by:)
+
