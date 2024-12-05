@@ -1,0 +1,18 @@
+Core data - Persist or cache data on a single device, or sync data to multiple devices with CloudKit. 
+
+Use core data to save your application's permanent data for offline use, to cache temporary data, and to add undo functionality 
+to your app on a single device. 
+To sync data across multiple devices in a single iCloud account, Core Data automatically mirrors your schema to a CloudKit container.
+Through Core Data’s Data Model editor, you define your data’s types and relationships, and generate respective class definitions. Core Data can then manage object instances at runtime to provide the following features.
+
+1. Persistence 
+2. Undo and redo of individual and batched changes 
+3. Background data tasks 
+4. View synchronization 
+5. Versioning and migration
+
+Core data stack
+1. NSManagedObjectModel
+2. NSManagedObjectContext - tracks changes to instances of your app's types 
+3. NSPersistentStoreCoordinator - saves and fecthes instacnes of your app's types from stores.
+4. NSPersistentContainer - instance to set up the model, context, and store coordinator simultaneously. 
