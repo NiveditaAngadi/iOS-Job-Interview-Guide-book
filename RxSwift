@@ -89,3 +89,38 @@ Observables
 Operators 
 Schedulers 
 
+11. What is Observables?
+The "Observable<T>" class provides the foundation of Rx code - the ability to asynchronously produce a sequence of events that can 
+"carry" an immutable snapshot of generic data of type T. 
+In the simplest words, it allows other objects or consumers to subscribe for events, or values, emitted by another object over time. 
+
+The "Observable<T>" class allows one or more observers to react to any events in real time and update the app's UI, or otherwise process and utilize 
+new and incoming data. 
+
+The "Observable" protocol - to which Observable<T> conforms is simple, An Observable can emit(and observers can receive) only three types of events. 
+
+1. A next event -> An event that "carries" the latest (or "next") data value. 
+An Observable may emit an indefinite amount of these values, until a terminating event is emitted. 
+
+2. A completed event -> This event terminates the event sequence with success. It means the Observable completed its life cycle successfully and won't 
+emit additional events. 
+
+3. An error event -> The Observable terminates with an error and will not emit additional events. 
+
+This simple contract of three possible events an observable can emit is anything and everything in Rx. Because is so universal, you can use it to create 
+event the most complex app logic. 
+
+You don't ever need to use delegate protocols or to inject closures to allow your classes to talk to each other. 
+
+12. There are two kind of Observable Sequences 
+1. Finite  - Some observable sequences emit zero, one or more values, and, at a later point, either
+terminate successfully or terminate with an error. In iOS download file from an internet.
+2. Infinite - Some activities are supposed to terminate either naturally or forcefully, there are other sequences which are simply infinite. 
+Often UI events are such infinite observable sequences. 
+For example - Code reacts as per device orientation changes. 
+
+13. What are Operators?
+
+14. What are Schedulers?
+
+
