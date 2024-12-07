@@ -1,0 +1,91 @@
+RxSwift 
+
+1. What is Rx? 
+Rx is a generic abstraction of computation expressed through Observable<Element> interface, which lets you broadcast and subscribe to values and other events 
+from an Observable stream. 
+
+2. What is "Generic abstraction of Computation" ?
+Generic abstraction of Computation refers to the concept of representing computational processes in a way that focuses on the essential, high-level 
+operations and hides the underlying details of implementation, allowing same concept to be applied across different computing scenarios without needing 
+to rewrite code for each specific context. 
+
+It's about creating a general model of computation that can be used to describe a wide variety of computing tasks without being tied to any specific hardware 
+or programming language. 
+
+3. What is RxSwift?
+RxSwift is the library, Swift-specific implementation of the Reactive Extensions standard. 
+RxSwift's intention is to enable easy composition of asynchronous operations and streams of data in the form of Observable objects and a suite of methods to
+transform and compose these pieces of asynchronous work. 
+
+Its a library for composing asynchronous and event-based code by using observable sequences and functional style operators. 
+RxSwift, in its essence, simplifies developing asynchronous programs by allowing your code to react to new data and process it in a sequential, isolated manner.
+
+4. Why RxSwift?
+Rx enables building apps in a declarative way. 
+
+Writing a asynchronous code, that truly runs in parallel, however, is rather complex, especially when different bits of code need to be to work 
+with the same pieces of data. 
+It's hard to argue about which piece of code updates the data first, or which code read the latest value. 
+
+Apple provides many API's which helps to run code asynchronously. 
+1. Notification Center 
+2. The delegate pattern
+3. Grand Central Dispatch 
+4. Closures
+
+Since most of code would perform some work asynchronously, and all UI events are inherently asynchronous, it's impossible to make assumptions in what 
+order the entirety of your app code will get executed. 
+
+App's code, runs differently on various conditions/ external factors, such as user input, network activity, or other OS events. 
+Each time when user fires up the app, the code may run in a completely different order depending on those external factors. 
+
+Using delegates requires you to adopt one particular pattern, another one for closures,
+yet another approach for subscribing to NotificationCenter, and so on. Since there is
+no universal language across all the asynchronous APIs, reading and understanding the
+code, and reasoning about its execution, becomes difficult.
+
+Some of the core issues with writing asynchronous code are, 
+1. the order in which pieces of work are performed. 
+2. shared mutable data
+
+5. What is State?
+State is the way software behaves at particular point in time based on its input and external factors.
+Managing state in your app, especially when shared between multiple asynchronous components is cumbersome process. 
+
+6. What is imperative programming?
+Imperative programming is a programming paradigm that uses statements to change the program's state. 
+You use imperative code to tell the app exactly when and how to do things. 
+
+It gets challenging for humans to write imperative code for complex, asynchronous apps especially when shared mutable state is involved. 
+
+7. What is side effects?
+Side effects represent any changes to the state outside of your code's current scope. 
+
+The important aspect of producing side effects is doing so in a controlled way. 
+You need to be able to determine which pieces of code cause side effects, and which simply process and output data. 
+
+8. How RxSwift helps in handling the state changes in asynchronous code?
+RxSwift tries to address the issues by 
+- Declarative code - lets you define pieces of behaviour. RxSwift will run these behaviours any time there's a relevant event and provide an immutable, isolated
+pieces of data to work with. 
+
+RxSwift tackles mutable state, it allows you to compose event sequences 
+and improves on architectural concepts such as code isolation, reusability, and decoupling.
+
+RxSwift finds the sweet spot between traditionally imperative Cocoa code and purist
+functional code. It allows you to react to events by using immutable code definitions to
+process asynchronous pieces of input in a deterministic, composable way.
+
+9. What is Reactive systems?
+Reactive systems is rather abstract term and covers web or iOS apps that exhibit most of all of the following qualities,
+
+1. Responsive: Keep UI upto date and represents the latest app state. 
+2. Resilient: Each behaviour defined in isolation and provides for flexible error recovery. 
+3. Elastic: The code handles varied workload, often implementing features such as lazy pull-driven data collections, event throttling, and resource sharing. 
+4. Message driven: Components use message-based communication for improved reusability and isolation, decoupling the lifecycle and implementation of classes.
+
+10. What are the building blocks of RxSwift?
+Observables
+Operators 
+Schedulers 
+
