@@ -1,0 +1,17 @@
+https://support.apple.com/en-in/guide/deployment/depc0aadd3fe/web
+https://support.apple.com/en-in/guide/deployment/welcome/web
+
+
+iOS Mobile Device Management (MDM) is a software tool 
+that allows businesses and IT teams to remotely monitor and manage iOS devices. 
+MDM can help businesses manage their iOS devices more efficiently and securely.
+
+Here are some things that iOS MDM can do:
+- Securely configure devices: MDM allows users to wirelessly configure devices by sending commands and profiles to the device. 
+- Manage apps, accounts, and data: MDM can configure apps, accounts, and data on each device. 
+- Enforce passwords and policies: MDM can enforce passwords and policies on devices. 
+- Remove apps when an employee leaves: MDM can remove apps deployed through the software when an employee leaves the company. 
+
+iOS, iPadOS, macOS, tvOS, watchOS 10, or later, and visionOS 1.1 or later, have a built-in framework that supports mobile device management (MDM).
+
+MDM lets you securely and wirelessly configure devices by sending profiles and commands to the device, whether they’re owned by the user or your organisation.
