@@ -1,0 +1,271 @@
+1. What are primary data storage options available in iOS?
+iOS provides several options for data storage, including, 
+
+1. UserDefaults: Key-Value storage for small amounts of simple data like preferences. 
+2. File System: For custom file storage, using FileManager. 
+3. Core data: Framework for managing structured data, with a focus on persistence. 
+4. SQLite: Lightweight relational database. 
+5. Keychain: Secure storage for sensitive data like passwords. 
+6. Cloud Storage: iCloud or third-party services for syncing data across devices.
+7. NSCoding/NSKeyedArchiver: For archiving objects into files. 
+
+2. How do you choose between CoreData and SQLite?
+Core data:
+   - Use for complex object graphs with relationships
+   - Provides out-of-the-box features like undo/redo, versioning, and faulting. 
+   - Abstracts database queries and focuses on meaning object models.
+
+SQLite:
+   - Use for highly optimized and custom queries 
+   - Preferred when dealing with large datasets and direct SQL control is needed. 
+   - Requires manula schema design and query execution. 
+
+3. Explain CoreData's lifecycle.
+Core data has following components:
+1. Managed Object Model(NSManagedObjectModel): Defines the schema of the data model.
+2. Persistent Store Coordinator(NSPersistentStoreCoordinator): Mediates between the object model and the physical data store.
+3. Managed Object Context(NSManagedObjectContext): Represents an in-memory workspace for interacting with the objects. 
+4. Managed Objects(NSManagedObject): Instances of entities defined in the model.
+
+Lifecycle: 
+  Fetch data into a managed object context. 
+  Modify objects within context 
+  Save the context to persist changes to the underlying store. 
+
+ 4. What are the difference between NSPersistentContainer and NSPersistentCoordinator?
+
+   NSPersistentContainer:
+    - Simplifies core data setup 
+    - Manages the entire core data stack (store coordinator, managed object context etc) 
+    - Preferred for modern apps.
+
+   NSPersistentCoordinator:
+   - Core part of the core data stack
+   - Responsible for coordinating multiple persistent stores. 
+   - Requires manula setup 
+
+5. How would you handle migration in Core data?
+   Migrations are required when the data model changes. There are two types:
+   1.	Lightweight Migration: Automatically handles minor changes (e.g., adding a new property).
+      options[NSMigratePersistentStoresAutomaticallyOption] = true
+      options[NSInferMappingModelAutomaticallyOption] = true
+   2. Custom Migration: For major changes, a mapping model or a custom migration policy is required. 
+
+
+6. How does iOS ensure data security for local storage?
+  1. File protection: Files are encrypted on disk using the device passcode.
+
+   let attributes = [FileAttributeKey.protectionKey: FileProtectionType.complete]
+   try FileManager.default.setAttributes(attributes, ofItemAtPath: filePath)
+
+ 2. Keychain: Secure, encrypted storage for sensitive data like passwords
+   let keychainQuery = [
+    kSecClass: kSecClassGenericPassword,
+    kSecAttrAccount: "exampleAccount",
+    kSecValueData: "password".data(using: .utf8)!
+    ] as CFDictionary
+    SecItemAdd(keychainQuery, nil)
+ 
+3.Data Protection APIs: Protects files when the device is locked.
+
+7. What are the differences between UserDefaults and Keychain?
+ User defaults: Stores lightweight, non-sensitive data 
+ Suitable for app settings or user preferences. 
+Advantages:
+	•	Simple API for storing key-value pairs.
+	•	Automatically persisted across app launches.
+	•	Ideal for lightweight data like settings.
+
+Limitations:
+	•	Not suitable for large or complex data.
+	•	Data is stored in plain text (not secure for sensitive information).
+	•	Limited querying capabilities
+
+KeyChain: Secure storage for sensitive information like passwords or API keys. 
+Provides encryption and protection using iOS's security features.
+
+8. What are the best practices for caching data in iOS apps?
+  1.	Use NSCache for in-memory caching.
+	2.	Use FileManager to cache large or non-sensitive data on disk.
+	3.	Leverage URLCache for caching network responses.
+	4.	Implement cache invalidation strategies:
+	  •	Time-based (e.g., TTL).
+  	•	Version-based (e.g., app version or content version).
+	5.	Use third-party libraries like Alamofire or Kingfisher for optimized caching.
+
+9. Explain how FileManager is used for file storage in iOS.
+  FileManager is used to read, write, and manage files on disk.
+
+  let fileManager = FileManager.default
+  let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+  let fileURL = documentsURL.appendingPathComponent("example.txt")
+
+  // Writing to a file
+  let content = "Hello, World!".data(using: .utf8)
+  try? content?.write(to: fileURL)
+
+  // Reading from a file
+  if let data = try? Data(contentsOf: fileURL) {
+      print(String(data: data, encoding: .utf8)!)
+  }
+  
+  10. How do you sync data across devices in an iOS app?
+  1. iCloud:
+     Use NSUbiquitousKeyValueStore for lightweight key-value syncing.
+     Use UIDocument for syncing files.
+     Use CloudKit for structured data.
+  2. Third-party services
+     Firebase Realtime Database or Firestore.
+     RESTful APIs with a custom backend.
+
+ 11. How does Core Data differ from Realm?
+   Core data is built on iOS(Objective-C, Swift), Performance: optimised for complex data models, Threading: complex, requires manual handling, 
+   Schema Changes: requires migration, Learning Curve: Steeper.
+	Core Data: Complex object graphs, undo/redo support.
+
+   Realm: is third-party library(Swift, Objective-C), Performance - faster for simple, read/write operations, Threading - Simplifies threading with Realm objects
+   Schema Changes - Handles schema updates automatically, Learning curve - Easier and developer-friendly. 
+Realm: Simple and high-performance data storage.
+
+12. How would you handle large datasets efficiently in iOS?
+ 1. Use paging for network requests 
+ 2. Leverage Coredata fetch limits for lazy loading. 
+ 3. Use SQLite or Realm for lightweight and fast database operations. 
+ 4. Optimize memory by offloading large data to the disk. 
+
+13. What are the security considerations for storing sensitive user data?
+  1. Use Keychain for credentials. 
+  2. Enable App Transport Security(ATS) for secure networking. 
+  3. Avoid hardcoding sensitive information (e.g., API Keys)
+  4. Use secure communication protocols like HTTPS.
+
+14. How would you cache large images efficiently in an iOS app?
+  1. Use NSCache for in-memory caching 
+  2. Use URLCache for HTTP response caching 
+  3. Store images on disk using FileManager. 
+  4. Use third-party like Kingfisher for advanced caching. 
+
+15. How would you store encrypted files in iOS?
+ 	 1.	Use FileProtectionType to encrypt files at the system level.
+   2. For custom encryption:
+      let data = "Sensitive data".data(using: .utf8)!
+      let encryptedData = try AES256.encrypt(data, key: key)
+      try encryptedData.write(to: fileURL)
+
+16. What are the best practices for using Core Data in a multithreaded environment?
+  1. Use separate contexts for each thread.
+  2. Use parent-child contexts to propagate changes.
+  3. Perform context operations on the appropriate thread:
+     context.perform {
+    // Perform Core Data operations here
+    }
+
+17. How does Core Data handle faulting?
+ Faulting in Core Data is a lazy-loading mechanism. 
+ Data is fetched from the persistent store only when accessed, reducing memory usage. 
+ However, faults can become “realized” objects when accessed.
+
+18. How do you manage data synchronization between local storage and a remote server?
+  	1. Use timestamps to track changes.
+    2. Implement delta syncing (only sync changed records).
+    3. Use background threads for syncing operations.
+    4. Handle conflicts using strategies like:
+       - Last-write wins 
+       - Merge changes
+
+19. What is NSFetchedResultsController?
+  NSFetchedResultsController is used to efficiently manage data display in table views. 
+  It tracks changes in the managed object context and updates the UI automatically.
+
+  let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Entity")
+let sortDescriptor = NSSortDescriptor(key: "attribute", ascending: true)
+fetchRequest.sortDescriptors = [sortDescriptor]
+
+let fetchedResultsController = NSFetchedResultsController(
+    fetchRequest: fetchRequest,
+    managedObjectContext: context,
+    sectionNameKeyPath: nil,
+    cacheName: "cache"
+)
+
+20. How would you ensure user data privacy when implementing analytics?
+  1. Avoid collecting personally identifiable information (PII).
+  2. Use data anonymization techniques.
+  3. Provide an opt-out option for analytics.
+  4. Comply with privacy regulations like GDPR.
+
+21. What is "data anonymization techniques"?
+Data anonymization is a technique used to protect users’ privacy by removing 
+or obfuscating personal identifiers from the data, 
+making it impossible (or very difficult) to trace the data back to an individual. 
+This is particularly important when handling analytics, diagnostics, or other types of data sharing, 
+especially in compliance with privacy laws like GDPR or CCPA.
+
+Common Data Anonymization Techniques in iOS
+
+1. Pseudonymization
+  Replace personal identifiers with pseudonyms or unique identifiers (e.g., user ID instead of email address).
+  Example:
+  Instead of storing a user’s name or email, generate a unique identifier:
+  let userID = UUID().uuidString
+
+2. Data Aggregation
+ Combine data from multiple users to report trends without storing individual user details.
+Example:
+  Instead of storing each user’s session duration, store the average session duration of all users.
+
+3. Data masking 
+  Partially hide sensitive information, such as replacing parts of a phone number or email with *.
+  let email = "user@example.com"
+  let maskedEmail = email.replacingOccurrences(of: "(?<=.).(?=.*@)", with: "*", options: .regularExpression)
+  print(maskedEmail) // u***@example.com
+
+4. Noise Injection
+ Introduce random variations into data to obscure specific values while maintaining overall trends.
+  Example: Add a random offset to location data to obscure the exact location.
+  let originalLatitude = 37.7749
+  let noise = Double.random(in: -0.001...0.001)
+  let anonymizedLatitude = originalLatitude + noise
+
+5. Removing Identifiable Fields
+Strip out fields that could uniquely identify a user (e.g., name, email, device ID) before storing or sharing data.
+Example:
+Before sharing analytics logs, exclude fields like IP addresses or device-specific IDs.
+
+6. Hashing
+ Use a one-way hashing algorithm (e.g., SHA256) to encode sensitive data like email addresses or phone numbers.
+Example:
+import CryptoKit
+
+let email = "user@example.com"
+if let data = email.data(using: .utf8) {
+    let hashed = SHA256.hash(data: data)
+    let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+    print(hashString) // Encoded hash
+}
+
+7. Generalization
+Replace specific data with broader categories to make it less identifiable.
+Example:
+Instead of storing exact ages, categorize users into age groups (e.g., 20-30, 30-40).
+
+8. Tokenization
+Replace sensitive data with a random token that refers to the original data without revealing it.
+Example: Use a payment token instead of storing credit card details.
+
+22. iOS-Specific Privacy Features for Anonymization
+	1.	Identifier for Advertisers (IDFA)
+Use Apple’s IDFA for tracking users anonymously across apps. However, ensure compliance with App Tracking Transparency (ATT) policies.
+	2.	Anonymous Sign-In with Apple
+Apple’s “Sign in with Apple” feature allows users to sign in anonymously by generating a unique identifier for each app instead of sharing personal details like an email address.
+	3.	On-Device Processing
+Keep data processing local on the device instead of uploading it to the server. Use frameworks like Core ML for AI processing.
+
+Best Practices for Data Anonymization
+
+	1.	Minimize Data Collection: Only collect the data necessary for the app’s functionality.
+	2.	Encrypt Sensitive Data: Ensure data is encrypted before storage or transmission.
+	3.	Regular Audits: Periodically review stored data to ensure compliance with privacy policies.
+	4.	Transparency: Inform users about the type of data being collected and provide options to opt-out or delete their data.
+
+
