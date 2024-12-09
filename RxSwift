@@ -120,7 +120,64 @@ Often UI events are such infinite observable sequences.
 For example - Code reacts as per device orientation changes. 
 
 13. What are Operators?
+ObservableType and the implementation of the observable class includes plenty of methods that abstract discrete pieces of asynchronous work, which can be
+composed together to implement more complex logic. Because they are highly decoupled and composable, these methods are most often referred to as "Operators".
+
+These operators take in asynchronous input and only produce output without causing side effects. 
+Operators are highly composable, they always take in data as input and output their result, so you can easily chain them in many different ways 
+achieving so much more than what a single operator can do its own. 
+Below code has filter, map as operators.
+
+UIDevice.rx.orientation
+  .filter { value in 
+  return value != .landscape
+} .map { _ in 
+  return "Portrait is the best"
+} .subscribe(onNext: { string in 
+  showAlert(text: string)
+})
 
 14. What are Schedulers?
+Schedulers are Rx equivalent of Dispatch queues.
+
+RxSwift comes with a number of predefined schedulers. 
+SerialDispatchQueueScheduler -> uses Grand Central Dispatch run your code serially on a given queue. 
+
+ConcurrentDispatchQueueScheduler -> will run code concurrently, while OperationQueueScheduler will allow you to schedule your subscriptions on a given 
+OperationQueue. 
+
+With RxSwift, you can schedule your different piece of work of the same subscription on different schedulers to achieve the best performance.
+RxSwift will act as a dispatcher between your subscriptions.
+
+Network subscription > RxSwift -> [Main thread serial scheduler] 1. UI event handling 2. UI updates 3. display to UI 2. display to UI 
+data biniding -> RxSwift -> [Background Concurrent Scheduler] 2.Process JSON  1. data update 
+UI Events -> RxSwift -> [Custom NSOperation Scheduler] 1. Fetch JSON 
+
+-  a piece of code (1) that runs on a custom OperationQueue-based scheduler.
+- The data output by this block serves as the input of the next block (2), which runs on
+a different scheduler, which is on a concurrent background GCD queue.
+- Finally, the last piece of blue code (3) is scheduled on the Main thread scheduler in
+order to update the UI with the new data.
+
+15. RxCocoa 
+RxSwift is the implementation of the common, platform-agnostic, Rx specification.
+Therefore, it doesn’t know anything about any Cocoa or UIKit-specific classes.
+
+RxCocoa is RxSwift’s companion library holding all classes that specifically aid
+development for UIKit and Cocoa. 
+
+RxCocoa adds reactive extensions to many UI components so that you can subscribe to various
+UI events out of the box.
+
+UISwitch 
+toggleSwitch.rx.isOn
+.subscribe(onNext: { isOn in
+print(isOn ? "It's ON" : "It's OFF")
+})
+
+RxCocoa adds the rx namespace to UITextField, URLSession, UIViewController
+and many more, and even lets you define your own reactive extensions under this
+namespace.
+
 
 
