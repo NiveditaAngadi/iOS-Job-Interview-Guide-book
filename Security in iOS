@@ -1,1 +1,276 @@
+Questions and answers belongs to iOS security concepts and demonstrate expertise in creating secure apps. 
 
+1. What is App Sandbox, and why is it important in iOS?
+The App sandbox is a security features in iOS that isolates apps, preventing them from accessing data or resources belonging to other apps or the system. 
+Each app runs its own container, restricting access to, 
+
+- Files outside its sandbox unless explicitly shared. 
+- System resources(e.g., Camera, Location) without user consent. 
+
+Importance:
+- Protects user data from malicious apps. 
+- Reduces the impact of vulnerabilities within apps. 
+
+2. How does iOS handles secure data storage? What mechanism can you use?
+iOS offers several mechanisms for secure data storage. 
+1. Keychain - Store sensitive information like passwords and tokens securely. Data is encrypted using AES and stored securely in the Secure Enclave. 
+2. File protection - Uses NSFileProtection to encrypt files at rest.
+3. SQLite/Core data encryption - Leverage third-party libraries or Apple APIs to encrypt data store before saving. 
+4. UserDefaults - Should not store sensitive information. If necessary, encrypt data before saving. 
+
+3. What is App Transport Security(ATS), and why is it required?
+ATS is an iOS feature that enforces secure connections using HTTPS. It ensures, 
+ - Use TLS 1.2 or higher for encrpted communication. 
+ - No plaintext HTTP traffic unless explicitly allowed in the Info.plist
+
+Significance:
+Protects against man-in-the-middle(MTM) attacks by encrypting data in transit.
+
+4. Explain Keychain and provide an expample of storing sesitive data. 
+The Keychain is a secure storage system for passwords, tokens, and certificates. 
+Data is stored securely and tied to the device, making it inaccessible if the app is uninstalled.
+
+import Security 
+
+func saveToKeychain(service: String, account: String, data: Data) -> OSStatus {
+    let query: [String: Any] = [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrService as String: service,
+        kSecAttrAccount as String: account,
+        kSecValueData as String: data
+    ]
+    SecItemDelete(query as CFDictionary) // Remove existing item
+    return SecItemAdd(query as CFDictionary, nil)
+}
+
+5. How does iOS protects data in transit?
+iOS ensures secure data transmission by, 
+1. Using HTTPS: Enforced by ATS to ensure data is encrypted with TLS. 
+2. Certificate Pinning: Prevents man-in-the-middle attacks by validating the server certificates. 
+3. Public-Key Cryptography: Used in APIs like CryptoKit to encrypt sensitive data. 
+
+Certificate Pinning:
+import Security
+
+func validateCertificate(serverTrust: SecTrust) -> Bool {
+    let pinnedCertificateData = <#Pinned certificate data#>
+    guard let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0),
+          let serverCertificateData = SecCertificateCopyData(serverCertificate) as Data? else {
+        return false
+    }
+    return serverCertificateData == pinnedCertificateData
+}
+
+6. What is the difference between symmetric and asymmetric encryption in iOS? When would you use each?
+Symmetric Encryption: Uses the same key for encrption and decryption(e.g.: AES)
+Use case: Storing sensitive data locally(e.g.: encrypting files)
+Asymmetric Encryption: Uses a public key for encryption and a private key for decryption(e.g., RSA). 
+Use case: Secure key exchange, digital signature, or transmitting sensitive data. 
+
+7. How does biometric authentication works in iOS?
+Biometric authentication (FaceID/TocuhID) is implemented via the "Local Authentication" framework. It uses the Secure Enclave to securely 
+process biometric data. 
+
+import LocalAuthentication
+
+func authenticateWithBiometrics() {
+    let context = LAContext()
+    let reason = "Authenticate to access secure data"
+    
+    if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
+        context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, error in
+            if success {
+                print("Authentication successful")
+            } else {
+                print("Authentication failed")
+            }
+        }
+    } else {
+        print("Biometric authentication not available")
+    }
+}
+
+8. What steps would you take to secure senstive data stored in UserDefaults?
+UserDefaults is not secure by default. To store sensitive data:
+	1.	Encrypt Data: Use a symmetric key to encrypt sensitive information before saving it.
+	2.	Store Key in Keychain: Securely store the encryption key in the Keychain.
+
+func saveEncryptedData(key: String, value: String) {
+    let data = value.data(using: .utf8)!
+    let encryptedData = <#Encryption logic#>
+    UserDefaults.standard.set(encryptedData, forKey: key)
+}
+
+9. What are some best practices for securing network communication in an iOS app?
+  1. Use HTTPS with ATS for secure communication 
+  2. Implement certificate pinning to prevent MITM attacks. 
+  3. Encrypt sensitive payloads with public-key cryptography(e.g,. using CryptoKit)
+  4. Avoid hardcoding API keys or sensitive information in the app. Use a secure backend to manage secrets. 
+
+10. How does iOS protect against code injection or runtime maniputation?
+  1. Code Signing: Ensures only trusted code runs on the device. Apps must be signed with an Apple-issued certificate.
+  2. Runtime Integrity Checks: Prevents tampering by validating app code at runtime.
+  3. Pointer Authentication (iOS 12+): Adds cryptographic signatures to pointers, preventing unauthorized memory manipulation.
+
+11. How would you handle the need for user authentication in a highly secure app?
+  1. Use OAuth 2.0 for secure authentication and token exchange.
+  2. Integrate Biometric Authentication (Face ID/Touch ID) for seamless user experience.
+  3. Use short-lived tokens and refresh tokens to minimize exposure.
+  4. Ensure tokens are stored securely in the Keychain.
+
+12. How do you secure inter-app communication in iOS?
+   1. Custom URL Schemes: Validate the source of incoming requests.
+   2. Universal Links: Use Apple’s recommended method for deep linking to ensure security.
+   3. Shared Keychain: Use shared Keychain access for secure data exchange between apps developed by the same team.
+   4. App Groups: Share data securely using app group containers.
+
+13. What is Secure Enclave, and how does it enhance security in iOS?
+  Secure Enclave is a hardware-based security coprocessor that manages sensitive tasks like biometric authentication, cryptographic key storage, 
+  and data encryption. It operates independently of the main processor, ensuring high security for sensitive operations. 
+
+   Key features:
+   - Stores private keys securely.
+   - Handles biometric data for Face ID and Touch ID, ensuring data is never exposed to apps or the OS.
+
+  Use case:
+    Storing cryptographic keys for signing sensitive transactions securely.
+
+14. How do you ensure that sensitive data is securely deleted from an iOS device?
+    1. Overwrite data: Before deleting a file, overwrite it with random bytes to prevent recovery.
+    2. File Protection: Use NSFileProtectionComplete so that the file is encrypted when the device is locked.
+    3. Keychain Item Deletion: Securely delete Keychain items using SecItemDelete:
+
+    let query: [String: Any] = [
+    kSecClass as String: kSecClassGenericPassword,
+    kSecAttrService as String: "com.myapp.service"
+    ]
+    SecItemDelete(query as CFDictionary)
+
+ 15. What is the difference between symmetric encryption (AES) and hashing (SHA)? When would you use each?
+   - 	Symmetric Encryption (AES): Encrypts and decrypts data using the same key.
+      Use Case: Protect sensitive data at rest or during transmission.
+   -  Hashing(SHA): Coverts data into a fixed-length hash. It is irreversible. 
+    Use Case: Store passwords securely (e.g., bcrypt or PBKDF2 for added security).
+
+16. How would you secure senstive API keys in an iOS app?
+   - Do not hardcode API keys - store them on a server and retrieve them dynamically when needed. 
+   - Environment Variables - Use xcconfig files to inject secrets securely during the build process. 
+   - Keychain - For locally stored keys, use Keychain. 
+   - Encryption - Encrypt keys stored in resources and decrypt them at runtime. 
+
+17. What is two-factor authentication (2FA), and how can it be implemented in an iOS app?
+   Two-factor authentication(2FA) requires a user to provide two forms of authentication (e.g., a password and a one-time code)
+    1. Push notifications: Send OTPs via SMS or email.
+    2. Time-Based One-Time Passwords(TOTP): Use libraries like Google Authenticator or OneTimePassword. 
+      let generator = TOTP(secret: secretKey, digits: 6, timeInterval: 30)
+      let otp = generator.currentPassword
+    3. Biometric Authentication: Use Face ID or Touch ID as the second factor.
+
+18. What are the risks of using third-party SDKs, and how can you mitigate them?
+  Risks:
+	•	Data leakage through poorly implemented SDKs.
+	•	Vulnerabilities introduced by outdated SDKs.
+
+  Mitigation:
+  1. Review SDKs for security practices.
+  2. Restrict SDK permissions to only what’s necessary.
+  3. Update SDKs regularly to patch vulnerabilities.
+  4. Monitor SDK network traffic for unexpected behavior.
+
+19. Explain how you would implement end-to-end encryption in an iOS app.
+  End-to-end encryption ensures that data is encrypted on the sender’s device and only decrypted on the recipient’s device.
+
+  Implementation Steps:
+	1.	Use public-key cryptography to exchange a shared secret between devices.
+	2.	Encrypt messages using AES with the shared secret.
+	3.	Decrypt messages on the recipient device using the shared secret.
+
+   import CryptoKit
+
+  let key = SymmetricKey(size: .bits256)
+  let plaintext = "Secure Message".data(using: .utf8)!
+  
+  let ciphertext = try! AES.GCM.seal(plaintext, using: key).combined!
+  let decryptedData = try! AES.GCM.open(AES.GCM.SealedBox(combined: ciphertext), using: key)
+
+20. Digital Signature in OTT-based iOS Apps. 
+   Digital signatures are a cryptographic mechanism used to ensure the authenticity and integrity of data. 
+   In the context of OTT(Over-The-Top)platform, digital signatures can help secure content delivery, user authentication, API communication, and more. 
+
+  Use Cases of Digital Signatures in an OTT App
+	1.	Content Authenticity: Ensure that the video streams or assets (e.g., subtitles, metadata) are not tampered with.
+	2.	User Authentication: Securely sign tokens (e.g., JWT) used for authentication or authorization.
+	3.	API Security: Sign API requests and responses to verify their origin.
+	4.	License Verification: Ensure DRM licenses are valid and not forged.
+	5.	Subscription Management: Securely validate subscription receipts or tokens.
+
+  Steps to Implement Digital Signatures in an iOS OTT App
+  1. A private key signs the data, creating a signature. This ensures that data was sent by trusted source. 
+
+    import CryptoKit
+   func generateDigitalSignature(privateKey: SecKey, data: Data) -> Data? {
+    let algorithm: SecKeyAlgorithm = .ecdsaSignatureMessageX962SHA256
+    
+    guard SecKeyIsAlgorithmSupported(privateKey, .sign, algorithm) else { return nil }
+    
+    var error: Unmanaged<CFError>?
+    guard let signature = SecKeyCreateSignature(privateKey, algorithm, data as CFData, &error) else {
+        print("Error generating signature: \(error!.takeRetainedValue())")
+        return nil
+    }
+    
+    return signature as Data
+  }
+
+Steps: 
+ 1. The private key is securely stored in the KeyChain or Secure Enclave. 
+ 2. Use SecKeyCreateSignature to sign the data.
+ 3. The resulting signature is sent along with the data.
+
+2.  Verifying a Digital Signature
+The recipient verifies the signature using the sender’s public key.
+
+func verifyDigitalSignature(publicKey: SecKey, data: Data, signature: Data) -> Bool {
+    let algorithm: SecKeyAlgorithm = .ecdsaSignatureMessageX962SHA256
+    
+    guard SecKeyIsAlgorithmSupported(publicKey, .verify, algorithm) else { return false }
+    
+    var error: Unmanaged<CFError>?
+    let isValid = SecKeyVerifySignature(publicKey, algorithm, data as CFData, signature as CFData, &error)
+    
+    if let error = error {
+        print("Error verifying signature: \(error.takeRetainedValue())")
+    }
+    
+    return isValid
+}
+
+Steps: 
+  1. The recipient retrieves the sender’s public key.
+  2. Verifies the signature using SecKeyVerifySignature.
+  3. If valid, it confirms the data is authentic and untampered.
+
+Examples:
+DRM License Validation
+In OTT apps, DRM (Digital Rights Management) is critical for protecting copyrighted content. A license server can sign the DRM license to prevent forgery.
+•	The app validates the signature before allowing playback.
+
+Digital signatures provide robust security for OTT apps by ensuring data authenticity and integrity. 
+By integrating them into content delivery, API communication, and DRM workflows, your app can provide a secure and seamless user experience. 
+Always follow best practices for key management and cryptographic operations to maintain high security standards.
+
+Benefits of Using Digital Signatures
+	1.	Authentication: Confirms the identity of the sender (e.g., backend or DRM server).
+	2.	Integrity: Ensures the data hasn’t been altered during transmission.
+	3.	Non-repudiation: The sender cannot deny sending the data since only they possess the private key.
+
+Challenges and Mitigation
+	1.	Key Management:
+	  •	Challenge: Protecting private keys from exposure.
+  	•	Mitigation: Use the Secure Enclave for key storage and operations.
+	2.	Performance Overhead:
+  	•	Challenge: Signing and verifying data can be computationally expensive.
+  	•	Mitigation: Optimize the payload size and use hardware acceleration (Secure Enclave).
+	3.	Compatibility:
+  	•	Challenge: Different devices and platforms may use different cryptographic standards.
+  	•	Mitigation: Use widely supported algorithms (e.g., ECDSA, RSA).
