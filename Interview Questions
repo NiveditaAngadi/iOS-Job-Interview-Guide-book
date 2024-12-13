@@ -21,10 +21,35 @@ settings of your target to link them dynamically.
 Search paths: Ensure the build settings include the correct search paths to locate the necessary dylibs on your system. 
 
 2. Why @selector in the Swift? 
+Selectors in Swift are compatible with Objective-C methods 
+because Swift can interoperate with the Objective-C runtime. When you use a Selector in Swift, 
+you reference a method name as an Objective-C selector. 
+This allows Swift code to dynamically call the referenced method implementation on a target object.
+https://developer.apple.com/documentation/swift/using-objective-c-runtime-features-in-swift
 
-3. Challenges 
+3. Why Objective-C compare to Swift?
 
-4. Why Viper, why not MVVM 
+4. Challenges faced in the App development recently.
 
-5. From scratch why select VIPER, how do you get ready the team for development. 
+5. Why Viper, why not MVVM 
+
+6. From scratch why select VIPER, how do you get ready the team for development. 
+
+7. What is SSL pinning?
+SSL pinning is a security technique that protects online connections from man-in-the-middle (MITM) attacks
+
+SSL pinning involves pre-configuring an app 
+or device with a specific certificate or public key, called the "pin". 
+When the app or device communicates with a server, it compares the server's certificate or public key with the pinned value. 
+If the values match, the connection is considered secure. 
+
+Benefits
+SSL pinning helps prevent attempts to intercept or tamper with communication. It's considered one of the best ways to make application traffic secure. 
+How to implement
+There are two main ways to implement SSL pinning: 
+Pin the certificate: Download the server's certificate and bundle it into the app. 
+Pin the public key: Retrieve the certificate's public key and include it in the app's code as a string. 
+The choice between these two options depends on the app's needs and the server's configuration. 
+
+
 
