@@ -1,0 +1,30 @@
+1. How dynamic librariers are linked in the App?
+In Xcode, dynamic linking means that when you build an application, it only includes references to necessary external libraries (called frameworks on macOS) at compile time, 
+and then actually loads and links those libraries into memory only when the application runs, allowing for smaller executable sizes and the ability to update libraries independently of the app itself; 
+essentially, the required code is loaded at runtime instead of being embedded directly in the application binary at compile time.
+
+Key points about dynamic linking in Xcode:
+Dynamic libraries (dylibs):
+On macOS, shared libraries are called "dynamic libraries" or "dylibs" and are the primary mechanism for dynamic linking. 
+Dynamic loader:
+When an application starts, the operating system's dynamic loader (dyld) locates and loads all the required dylibs based on
+the information stored in the application's executable.
+
+Benefits:
+Reduced application size: Only the necessary parts of the libraries are loaded into memory when needed, resulting in smaller executable files. 
+Memory efficiency: Multiple applications can share the same copy of a dynamic library in memory, reducing overall memory usage. 
+Flexibility in updates: You can update a shared library without needing to recompile all applications that use it. 
+
+How to use in Xcode:
+Link frameworks: When adding external libraries to your project, select the "Framework" option in the "General" 
+settings of your target to link them dynamically. 
+Search paths: Ensure the build settings include the correct search paths to locate the necessary dylibs on your system. 
+
+2. Why @selector in the Swift? 
+
+3. Challenges 
+
+4. Why Viper, why not MVVM 
+
+5. From scratch why select VIPER, how do you get ready the team for development. 
+
