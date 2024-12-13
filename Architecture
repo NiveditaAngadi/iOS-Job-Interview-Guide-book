@@ -27,4 +27,84 @@ existence but ViewModels rarely holding much logic, mostly it
 forwards calls from Interactors (UsesCases), Repositories, ...
 - ViewModels’s role prepare and transform model data for the Views,
 SwiftUI already provide those tools thru ViewModifiers such as
-FormatStyles, LocalizedStringKey, ...
+FormatStyles, LocalizedStringKey
+
+4. Why VIPER, why not MVVM
+Both MVVM (Model-View-ViewModel) and VIPER(View-Interactor-Presenter-Entity-Router) are architectural patterns used in iOS 
+development to structure code for scalability, maintainability, and testability. While MVVM is simpler and easier to implement, 
+it has certain drawbacks compared to VIPER when used in complex applications.
+
+Drawbacks of MVVM relative to VIPER.
+1. Lack of Clear Responsibility Segregation
+	•	MVVM Drawback:
+MVVM does not enforce strict boundaries between components, and the ViewModel often ends up taking too many responsibilities, 
+leading to a “God” ViewModel. It can mix business logic, view logic, and data transformation responsibilities.
+
+VIPER Advantage:
+VIPER has a more clearly defined separation of concerns, splitting responsibilities into Interactor, Presenter, and Router. 
+This ensures that no single component becomes overly complex.
+
+2. Scalability Challenges
+	•	MVVM Drawback:
+In large applications, MVVM can become difficult to scale as the ViewModel grows in size and complexity, often blurring the lines between layers.
+VIPER Advantage:
+VIPER scales better for large applications due to its modular approach, where each module handles a specific feature. 
+The structure naturally enforces scalability and modularity.
+
+3. Navigation Management
+
+	•	MVVM Drawback:
+MVVM lacks a formalized way to handle navigation. It often falls to the ViewModel or View, which can lead to tightly coupled navigation code.
+VIPER Advantage:
+VIPER introduces the Router explicitly for navigation management, keeping navigation logic separate from other components and making it more reusable and testable.
+
+4. Testability
+
+	•	MVVM Drawback:
+Testing MVVM can be more challenging because the ViewModel can encompass multiple responsibilities. Writing isolated unit tests often requires additional mocking and setup.
+VIPER Advantage:
+VIPER components are small and focused on specific tasks (Interactor for business logic, Presenter for presentation logic), making them easier to test independently.
+
+ 5. Potential for Tight Coupling
+
+	•	MVVM Drawback:
+MVVM relies heavily on data binding (e.g., Combine or RxSwift) between the View and ViewModel. If not designed carefully, this can lead to tight coupling, making changes more challenging and prone to bugs.
+VIPER Advantage:
+VIPER enforces a clear boundary between the View and Presenter through explicit protocols, reducing the risk of tight coupling.
+
+
+6. Steeper Learning Curve for Advanced Features
+
+	•	MVVM Drawback:
+For advanced requirements like dependency injection, deep linking, or modularization, MVVM doesn’t provide explicit solutions, requiring developers to design custom patterns.
+VIPER Advantage:
+VIPER’s modular structure and clear responsibilities inherently support advanced features and integrations like dependency injection and feature toggling.
+
+7. Boilerplate Code
+
+	•	MVVM Drawback:
+Although MVVM is simpler than VIPER, its lack of predefined roles can lead to scattered and redundant boilerplate code when developers try to manage additional responsibilities.
+VIPER Advantage:
+While VIPER has more boilerplate code upfront, its strict modularity reduces redundancy and enforces a predictable structure across the app.
+
+8. Suitability for Complex Applications
+
+	•	MVVM Drawback:
+MVVM may struggle in complex applications with intricate business logic, as the ViewModel becomes overburdened.
+VIPER Advantage:
+VIPER is well-suited for complex applications, thanks to its dedicated layers for business logic (Interactor), navigation (Router), and presentation (Presenter).
+
+When to Choose MVVM vs. VIPER
+
+	•	Choose MVVM:
+  	•	Small-to-medium applications.
+	  •	Simpler features with minimal navigation or business logic.
+	  •	Faster initial development with fewer layers.
+	•	Choose VIPER:
+	  •	Large-scale or enterprise-level applications.
+  	•	Complex navigation and business logic.
+	  •	Applications requiring high testability and scalability.
+
+While MVVM is simpler and quicker to implement, VIPER offers better separation of concerns, scalability, and testability for complex applications. The choice between them should depend on the complexity, team expertise, and future requirements of your application.
+
+
