@@ -80,6 +80,18 @@ enum Optional<Wrapped>: ExpressibleByNilLiteral {
  case some(Wrapped)
 }
 
+12. What is @frozen? 
+In Swift, the @frozen attribute(swift constructs) is used to optimize the performance of enum types by making the set of cases as fixed. 
+When an enum is marked as frozen, the Swift Compiler can perform various optimization that improve memory usage, performance and pattern matching. 
+The @frozen attribute is used to freeze an enum, indicating that the set of enum cases is final and cannot be extended in future versions of the code. 
+
+Why Use @frozen?
+- Performance Optimization: By freezing the enum, the compiler can optimize the layout of the enum in memory. 
+This can lead to better performance, especially in cases where pattern matching is heavily used.
+- Lower Memory Usage: The compiler can make certain assumptions about the size of the enum, reducing memory overhead.
+- Faster Matching: If the set of cases is fixed, pattern matching can be more efficient. 
+The compiler doesn't need to check for additional cases that could be added later.
+
 12. What is nil?
 Valueless state
 You set an optional variable to a valueless state by assigning it the special value nil:
