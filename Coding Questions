@@ -1,0 +1,172 @@
+1. Reverse a String
+
+func reverseString(_ str: String) -> String {
+  return String(str.reversed())
+}
+
+2. Check for palindrome 
+func isPalindrome(_ str: String) -> Bool {
+  let cleanedString = str.lowercased().filter { $0.isLetter }
+  return cleanedString == String.(cleanedString.reversed())
+}
+
+3. Find the Largest Element in an Array
+func largestElement(in array: [Int]) -> Int? {
+  return array.max()
+}
+
+4. Write a function to generate the first n numbers in the Fibonacci sequence.
+func fibonacci(n: Int) -> [Int] {
+    guard n > 1 else { return n == 1 ? [0] : [] }
+    var sequence = [0, 1]
+    while sequence.count < n {
+        let next = sequence[sequence.count - 1] + sequence[sequence.count - 2]
+        sequence.append(next)
+    }
+    return sequence
+}
+
+// Example usage:
+let fibSequence = fibonacci(n: 10)
+print(fibSequence) // Output: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+
+5. Find missing number in an Array 
+Given an array of integers containing numbers from 1 to n with one number missing, write a function to find the missing number.
+
+func findMissingNumber(_ nums: [Int]) -> Int {
+    let n = nums.count + 1
+    let totalSum = n * (n + 1) / 2
+    let arraySum = nums.reduce(0, +)
+    return totalSum - arraySum
+}
+
+// Example usage:
+let numbers = [1, 2, 3, 4, 6]
+let missingNumber = findMissingNumber(numbers)
+print(missingNumber) // Output: 5
+
+6. Merge two arrays
+func mergeSortedArrays(_ array1: [Int], _ array2: [Int]) -> [Int] {
+    var mergedArray = [Int]()
+    var i = 0, j = 0
+
+    while i < array1.count && j < array2.count {
+        if array1[i] < array2[j] {
+            mergedArray.append(array1[i])
+            i += 1
+        } else {
+            mergedArray.append(array2[j])
+            j += 1
+        }
+    }
+
+    while i < array1.count {
+        mergedArray.append(array1[i])
+        i += 1
+    }
+
+    while j < array2.count {
+        mergedArray.append(array2[j])
+        j += 1
+    }
+
+    return mergedArray
+}
+
+// Example usage:
+let arr1 = [1, 3, 5, 7]
+let arr2 = [2, 4, 6, 8]
+let merged = mergeSortedArrays(arr1, arr2)
+print(merged) // Output: [1, 2, 3, 4, 5, 6, 7, 8]
+
+7. Write a function to remove duplicates from a sorted array 
+func removeDuplicates(_ nums: inout [Int]) -> Int {
+    guard nums.count > 1 else { return nums.count }
+
+    var index = 1
+    for i in 1..<nums.count {
+        if nums[i] != nums[i - 1] {
+            nums[index] = nums[i]
+            index += 1
+        }
+    }
+    nums.removeSubrange(index..<nums.count)
+    return index
+}
+
+// Example usage:
+var sortedArray = [1, 1, 2, 3, 3, 4, 4, 5]
+let length = removeDuplicates(&sortedArray)
+print(sortedArray) // Output: [1, 2, 3, 4, 5]
+print(length) // Output: 5
+
+8. Two Sum Problem
+Given an array of integers and a target sum, write a function to find two numbers that add up to the target sum.
+
+func twoSum(_ nums: [Int], _ target: Int) -> [Int]? {
+    var numToIndex = [Int: Int]()
+    for (index, num) in nums.enumerated() {
+        if let complementIndex = numToIndex[target - num] {
+            return [complementIndex, index]
+        }
+        numToIndex[num] = index
+    }
+    return nil
+}
+
+// Example usage:
+let array = [2, 7, 11, 15]
+if let result = twoSum(array, 9) {
+    print(result) // Output: [0, 1]
+}
+
+9. Check for Anagram
+Write a function to check if two strings are anagrams of each other.
+
+func areAnagrams(_ s1: String, _ s2: String) -> Bool {
+    return s1.lowercased().sorted() == s2.lowercased().sorted()
+}
+
+// Example usage:
+let str1 = "Listen"
+let str2 = "Silent"
+let result = areAnagrams(str1, str2)
+print(result) 
+
+10.  Implement a Queue using Stacks
+struct Queue<T> {
+    private var stack1: [T] = []
+    private var stack2: [T] = []
+
+    mutating func enqueue(_ element: T) {
+        stack1.append(element)
+    }
+
+    mutating func dequeue() -> T? {
+        if stack2.isEmpty {
+            while !stack1.isEmpty {
+                stack2.append(stack1.removeLast())
+            }
+        }
+        return stack2.popLast()
+    }
+
+    func peek() -> T? {
+        return !stack2.isEmpty ? stack2.last : stack1.first
+    }
+
+    func isEmpty() -> Bool {
+        return stack1.isEmpty && stack2.isEmpty
+    }
+}
+
+// Example usage:
+var queue = Queue<Int>()
+queue.enqueue(1)
+queue.enqueue(2)
+queue.enqueue(3)
+print(queue.dequeue() ?? "Empty") // Output: 1
+print(queue.peek() ?? "Empty") // Output: 2
+print(queue.dequeue() ?? "Empty") // Output: 2
+print(queue.isEmpty()) // Output: false
+
