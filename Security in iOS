@@ -252,8 +252,9 @@ Steps:
 
 Examples:
 DRM License Validation
-In OTT apps, DRM (Digital Rights Management) is critical for protecting copyrighted content. A license server can sign the DRM license to prevent forgery.
-•	The app validates the signature before allowing playback.
+In OTT apps, DRM (Digital Rights Management) is critical for protecting copyrighted content. 
+A license server can sign the DRM license to prevent forgery.
+The app validates the signature before allowing playback.
 
 Digital signatures provide robust security for OTT apps by ensuring data authenticity and integrity. 
 By integrating them into content delivery, API communication, and DRM workflows, your app can provide a secure and seamless user experience. 
