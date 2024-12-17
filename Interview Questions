@@ -28,6 +28,9 @@ This allows Swift code to dynamically call the referenced method implementation 
 https://developer.apple.com/documentation/swift/using-objective-c-runtime-features-in-swift
 
 3. Why Objective-C compare to Swift?
+Legacy code support 
+C/C++ code interoperability is easier in case of Objective-C 
+Method swizzling (method swap), dynamic dispatch is extensive in Objective-C 
 
 4. Challenges faced in the App development recently.
 
@@ -52,4 +55,16 @@ Pin the public key: Retrieve the certificate's public key and include it in the 
 The choice between these two options depends on the app's needs and the server's configuration. 
 
 
+8. Is Keychain stored data is app specific or device specific?
+Keychain data is primarily device specific on Apple devices, meaning that data stored in the keychain on one device cannot be directly accessed by another device 
+unless specifically configured to sync through iCloud Keychain, 
+and even then, access is still tied to the user's Apple ID on that device; however, within a device, 
+individual apps can only access their own keychain data, making it app-specific within the context of that device. 
+Key points about Keychain data:
+Device-centric security:
+The encryption key for keychain data is tied to the device, making it difficult to access data on a different device even if you have the same Apple ID. 
+App-specific access:
+Each app can only access the keychain data it has specifically stored, preventing other apps from accessing sensitive information. 
+iCloud Keychain syncing:
+Users can choose to enable iCloud Keychain to sync specific keychain items across their Apple devices, but this still requires authentication with the user's Apple ID on each device.
 
