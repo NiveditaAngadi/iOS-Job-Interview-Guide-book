@@ -1,3 +1,73 @@
 Hi, I am Nivedita Angadi. Professionally, I am an experienced iOS developer, have hands on experience of around 12+ years. 
 
 In this tenure opportunities are vast. 
+
+Challenges:
+
+1. Integration of Helpshift SDK end to end
+S: Integrate the Helpshift - AI chat bot in the application 
+Challenges:
+1. Feasibility study
+2. Impact on the app size and launch time 
+3. Understand the features of chat bot and how can align with our product requirements 
+4. Communication with various stakeholders spread across the various regions
+5. Along with support team setup the chat bot according to requirement 
+
+T
+1. Understand the SDK and integration 
+2. Implement the chat features 
+3. Communicate with other platform such as Android
+
+A
+1. Feasibility study about app size and launch time changes 
+2. Understanding the SDK by rereading the documents and tech discussion with SDK team 
+3. Collaborate with Support team to build the bot flow as per requirements.
+4. Implemenatation and regressing the features
+5. Identifying the critical bugs and fixing them in SDK with the SDK engineers. 
+
+R
+1. Reduced in the response time for support by 48 hours to 7 hours. 
+2. Huge cost saving for customer support 
+3. Automating the ticket creation, resolution etc. Previously its manual effort.
+
+2. Handling the legacy projects with migration to Swift 
+Challenges while handling the legacy projects -
+- Lack of documentation 
+- Outdated design patterns and practices 
+- Complex, tightly coupled codebases
+
+Demonstrate the ability to showcase technical proficiency, adaptability, and strategic problem-solving 
+
+S: Update the legacy code base which is in Objetive-C to Swift - modern language. 
+
+T:  Understand the legacy code base, read and comprehend poorly documented code. Learn design principles that governed the system. Analyse the dependecies
+and their potential impact on modern changes. 
+
+A: 
+1. Start by reviewing the architecture and identifying core components. 
+2. Debug key workflows to understand interactions bteween components. 
+3. Use tools like Instruments, static analysis tools, or dependency graph generators to map the system.
+4. Communicate with the team for legacy system code.
+5. Refactor incrementally - isolate components and improve them one at a time. 
+6. Maintaining the compatibility with older version of OS. 
+
+Challenges:
+Modification without regression 
+No impact on the functionality 
+bug fix in unfamiliar code base. 
+Handling the technical debt areas and working on the without impact on the business priorities 
+
+R: Successfully migrate Objective-C code to Swift. 
+Able to support latest OS versions with Swift code and features. 
+
+3. Learning 
+ RxSwift, VIPER
+S 
+
+T 
+
+A 
+
+R
+
+
