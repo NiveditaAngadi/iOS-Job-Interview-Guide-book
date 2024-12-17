@@ -1,0 +1,84 @@
+Working with a legacy system has its own challenges. 
+- Lack of documentation 
+- Outdated design patterns and practices 
+- Complex, tightly coupled codebases
+
+Need to work in environments where long-standing codebases like Objective-C coexist with modern technologies like Swift. 
+
+Demonstrating this ability involves a combination of technical proficiency, adaptability, and strategic probilem-solving. 
+
+1. Understand the legacy system 
+ Key skills:
+1. Read and comprehend outdated or poorly documented code. 
+2. Learn the design principles (or lack thereof) that governed the original system
+3. Analyze dependencies and their potential impact on modern changes. 
+
+
+How do you apporach unerstanding a large legacy codebase when joining a new project?
+- Start by reviewing the architecture and identifying core components. 
+- Use tools like AppCode or SourceKit for code exploration. 
+- Debug key workflows to understand interactions bteween components. 
+- Use tools like Instruments, static analysis tools, or dependency graph generators to map the system.
+- Talk to senior developers who have - Collaborate with team members who have domain knowledge.
+
+2.  Refactoring Without Breaking
+	•	Challenges:
+	  •	Modifying legacy code without introducing regressions.
+	  •	Balancing the need for improvement with the risks of breaking existing functionality.
+	•	Approach:
+	  •	Use automated tests to ensure changes don’t break functionality.
+	  •	Refactor incrementally: isolate components and improve them one at a time.
+	  •	Maintain backwards compatibility wherever possible.
+
+3. Integrating Modern Technologies
+	•	Challenges:
+	  •	Introducing new frameworks (like Swift or SwiftUI) while coexisting with Objective-C.
+	  •	Managing compatibility issues between new and old components.
+	•	Approach:
+	  •	Use interoperability features (like Objective-C and Swift bridging headers).
+  	•	Gradually replace old modules with modern counterparts.
+  	•	Apply modern design patterns (e.g., MVVM or VIPER) to new features while keeping legacy modules intact.
+
+4. Debugging and Optimizing Legacy Code
+	•	Challenges:
+  	•	Diagnosing bugs in unfamiliar code.
+  	•	Optimizing performance in areas written with outdated practices.
+	•	Approach:
+  	•	Use runtime debugging tools (lldb, Instruments) to trace issues.
+  	•	Profile legacy code to find bottlenecks and optimize critical paths.
+	  •	Apply modern Objective-C runtime methods or rewrite specific components in Swift for better performance.
+
+5. Maintaining Business Continuity
+	•	Challenges:
+  	•	Ensuring new features don’t disrupt critical workflows.
+  	•	Aligning modernization efforts with business priorities.
+	•	Approach:
+	  •	Prioritize stability over rapid innovation.
+  	•	Collaborate with stakeholders to balance feature requests with refactoring needs.
+  	•	Clearly communicate risks and benefits of working on legacy code.
+
+6. How do you handle technical debt in legacy systems?
+	•	Identify areas of high-impact technical debt that directly affect performance or scalability.
+  •	Implement incremental refactoring with minimal disruption to existing workflows.
+  •	Regularly allocate time for debt reduction in sprint planning (e.g., 20% of sprint capacity for refactoring).
+
+7. How would you integrate Swift into a codebase heavily written in Objective-C?
+	•	Use bridging headers to enable interoperability between Objective-C and Swift.
+	•	Introduce Swift for new features, keeping existing Objective-C modules intact.
+	•	Gradually refactor shared components, starting with models and utility classes, into Swift.
+
+8. How do you ensure test coverage for a legacy system?
+	•	Use behavior-driven testing for critical workflows to document expected outcomes.
+	•	Add unit tests for stable components while writing integration tests for cross-module interactions.
+	•	Introduce modern testing frameworks (e.g., XCTest, Quick) where applicable.
+
+9. 
+Scenario: Your team is tasked with extending a legacy Objective-C codebase to support a new feature.
+Approach:
+	1.	Understand the Current State: Analyze the existing module related to the new feature using dependency graphs.
+	2.	Isolate the Impact: Identify the components that will be affected by the new feature.
+	3.	Introduce New Components: Write the new feature in Swift and integrate it via bridging headers.
+	4.	Refactor Incrementally: Replace a small portion of the legacy code with Swift while maintaining compatibility.
+	5.	Test Thoroughly: Add unit tests for both the old and new components to ensure integration success.
+
+
