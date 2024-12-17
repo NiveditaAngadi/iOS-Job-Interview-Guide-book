@@ -16,8 +16,9 @@ ld64. Twice as fast as for many projects. Links parallel - That includes copying
 
 6. Explain static linking. 
 To understand static linking, let's go way back to when it all started. 
-In the beginning, programs were simple and there was just one source file. Building was easy. You just ran the compiler on your one source file and it produced the executable program. 
-But having all your source code in one file did not scale. How do you build with multiple source files? And this is not just because you don't want to edit a large text file.
+In the beginning, programs were simple and there was just one source file. Building was easy. 
+You just ran the compiler on your one source file and it produced the executable program. But having all your source code in one file did not scale. 
+How do you build with multiple source files? And this is not just because you don't want to edit a large text file.
 The real savings is not re-compiling every function, every time you build. 
 What they did was to split the compiler into two parts. 
  - The first part compiles source code to a new intermediate "relocatable object" file. 
@@ -58,10 +59,9 @@ Instead of copying code out of the library into the final program,
 the linker just records a kind of promise. That is, it records the symbol name used from the dynamic library and what the library's path will be at runtime. 
 
 11. What are the advantages of dynamic linking?
-It means your program file size is under your control. It just contains your code, and a list of dynamic libraries it needs at runtime. You no longer get copies of library code in your program. 
-Your program's static link time is now proportional to the size of your code, and independent of the number of dylibs you link with. 
-Also, the Virtual Memory system can now shine. 
-When it sees the same dynamic library used in multiple processes, the Virtual Memory system will re-use the same physical pages of RAM for that dylib in all processes that use 
+It means your program file size is under your control. It just contains your code, and a list of dynamic libraries it needs at runtime. 
+You no longer get copies of library code in your program. Your program's static link time is now proportional to the size of your code, and independent of the number of dylibs you link with. 
+Also, the Virtual Memory system can now shine. When it sees the same dynamic library used in multiple processes, the Virtual Memory system will re-use the same physical pages of RAM for that dylib in all processes that use 
 that dylib. 
 
 12. What are the cause of using dynamic library?
