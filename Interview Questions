@@ -1,3 +1,4 @@
+
 1. How dynamic librariers are linked in the App?
 In Xcode, dynamic linking means that when you build an application, it only includes references to necessary external libraries (called frameworks on macOS) at compile time, 
 and then actually loads and links those libraries into memory only when the application runs, allowing for smaller executable sizes and the ability to update libraries independently of the app itself; 
@@ -75,5 +76,18 @@ Users can choose to enable iCloud Keychain to sync specific keychain items acros
 11. What is Dispatch Barrier?
 
 12. Write a function - generic to add two numbers, strings or any type.
+
+13. Difference between Objective-C and Swift 
+
+14. Threading explain 
+
+15. GCD - GCD group 
+
+16. Operation Queue 
+
+17. How you do code review 
+
+18. what is Semaphore ? Dispatch Semaphore ? How do you create normal semaphore?
+
 
 
