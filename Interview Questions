@@ -68,3 +68,12 @@ Each app can only access the keychain data it has specifically stored, preventin
 iCloud Keychain syncing:
 Users can choose to enable iCloud Keychain to sync specific keychain items across their Apple devices, but this still requires authentication with the user's Apple ID on each device.
 
+9. Define the security fix you have encountered?
+
+10. Define the memory managment in app - how you handled. 
+
+11. What is Dispatch Barrier?
+
+12. Write a function - generic to add two numbers, strings or any type.
+
+
