@@ -77,6 +77,74 @@ Users can choose to enable iCloud Keychain to sync specific keychain items acros
 
 12. Write a function - generic to add two numbers, strings or any type.
 
+protocol addition {
+    associatedtype ItemType
+    func add(_ n1: ItemType) -> ItemType
+}
+
+extension String: addition {
+    typealias ItemType = String
+    
+    func add(_ n1: String) -> String {
+        return self + n1
+    }
+}
+
+extension Int : addition {
+    typealias ItemType = Int
+    
+    func add(_ n1: Int) -> Int {
+        return self + n1
+    }
+}
+
+extension Double : addition {
+    typealias ItemType = Double
+    
+    func add(_ n1: Double) -> Double {
+        return self + n1
+    }
+}
+
+"Hello".add("World")
+1.add(3)
+1.5.add(2.4)
+
+protocol addTwoItemType {
+    associatedtype ItemType
+    func addTwo(_ n1: ItemType, _ n2: ItemType) -> ItemType
+}
+
+struct addTwoInt : addTwoItemType {
+    typealias ItemType = Int
+    
+    func addTwo(_ n1: Int, _ n2: Int) -> Int {
+        return n1 + n2
+    }
+}
+
+struct addTwoDouble : addTwoItemType {
+    typealias ItemType = Double
+    
+    func addTwo(_ n1: Double, _ n2: Double) -> Double {
+        return n1 + n2
+    }
+}
+
+struct addTwoString : addTwoItemType {
+    typealias ItemType = String
+    
+    func addTwo(_ n1: String, _ n2: String) -> String {
+        return n1 + n2
+    }
+}
+
+addTwoInt().addTwo(1, 2)
+addTwoDouble().addTwo(1.5, 2.4)
+addTwoString().addTwo("Hello", "World") 
+
+
+
 13. Difference between Objective-C and Swift 
 
 14. Threading explain 
